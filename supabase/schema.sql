@@ -130,4 +130,177 @@ create trigger products_set_updated_at
 -- Run this once after the tables. Creates a public bucket for product images.
 insert into storage.buckets (id, name, public)
 values ('product-images', 'product-images', true)
-on conflict (id) do nothing;
+on conflict (id) do update set public = true;
+
+-- IMPORTANT: even when bucket.public = true, anonymous reads need a SELECT
+-- policy on storage.objects. Without this, <img src="..."> requests 403/400.
+-- Drop & recreate so this is idempotent.
+drop policy if exists "Public read product-images" on storage.objects;
+create policy "Public read product-images"
+  on storage.objects for select
+  to anon, authenticated
+  using (bucket_id = 'product-images');
+
+-- =========================================================================
+-- CUSTOMERS  (one row per unique buyer, dedup by email/phone)
+-- =========================================================================
+create table if not exists public.customers (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  full_name text not null,
+  email     text not null,
+  phone     text not null,
+
+  total_orders   int            not null default 0,
+  total_spent_pkr numeric(12,2) not null default 0
+);
+
+create unique index if not exists customers_email_idx on public.customers (lower(email));
+create index if not exists customers_phone_idx on public.customers (phone);
+
+alter table public.customers enable row level security;
+
+drop trigger if exists customers_set_updated_at on public.customers;
+create trigger customers_set_updated_at
+  before update on public.customers
+  for each row execute function public.set_updated_at();
+
+-- =========================================================================
+-- COUPONS  (discount codes — admin-managed, optional on checkout)
+-- =========================================================================
+create table if not exists public.coupons (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+
+  code text unique not null,
+  description text,
+
+  -- 'percent' uses value as % (1-100). 'flat' uses value as PKR off.
+  type  text not null check (type in ('percent','flat')),
+  value numeric(10,2) not null check (value >= 0),
+
+  min_order_pkr   numeric(10,2) not null default 0,
+  max_discount_pkr numeric(10,2),
+
+  starts_at  timestamptz,
+  expires_at timestamptz,
+
+  usage_limit int,
+  times_used  int not null default 0,
+
+  is_active bool not null default true
+);
+
+create index if not exists coupons_code_idx     on public.coupons (lower(code));
+create index if not exists coupons_active_idx   on public.coupons (is_active);
+
+alter table public.coupons enable row level security;
+
+-- =========================================================================
+-- ORDERS
+-- =========================================================================
+create table if not exists public.orders (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  -- Human-readable order number (e.g. LCV-A8K2D9). Unique, generated on insert.
+  order_number text unique not null,
+
+  customer_id uuid references public.customers (id) on delete set null,
+
+  -- Snapshot of customer details at time of order
+  customer_name  text not null,
+  customer_email text not null,
+  customer_phone text not null,
+
+  -- Shipping
+  shipping_address text not null,
+  city             text not null,
+  postal_code      text,
+  order_notes      text,
+
+  -- Money (all PKR)
+  subtotal_pkr  numeric(12,2) not null default 0,
+  delivery_pkr  numeric(12,2) not null default 0,
+  discount_pkr  numeric(12,2) not null default 0,
+  total_pkr     numeric(12,2) not null default 0,
+
+  -- Coupon snapshot
+  coupon_code text,
+
+  -- Payment
+  payment_method text not null check (payment_method in ('jazzcash','easypaisa')),
+  payment_status text not null default 'pending'
+    check (payment_status in ('pending','paid','failed','refunded')),
+  payment_reference   text,                -- buyer-provided TID
+  payment_verified_at timestamptz,
+  payment_notes       text,                -- admin notes (e.g. why failed)
+
+  -- Order lifecycle
+  order_status text not null default 'pending'
+    check (order_status in (
+      'pending','confirmed','processing','shipped','delivered','cancelled'
+    ))
+);
+
+create index if not exists orders_created_at_idx     on public.orders (created_at desc);
+create index if not exists orders_payment_status_idx on public.orders (payment_status);
+create index if not exists orders_order_status_idx   on public.orders (order_status);
+create index if not exists orders_customer_idx       on public.orders (customer_id);
+create index if not exists orders_email_idx          on public.orders (lower(customer_email));
+
+alter table public.orders enable row level security;
+
+drop trigger if exists orders_set_updated_at on public.orders;
+create trigger orders_set_updated_at
+  before update on public.orders
+  for each row execute function public.set_updated_at();
+
+-- =========================================================================
+-- ORDER_ITEMS  (line items for each order — snapshot product details)
+-- =========================================================================
+create table if not exists public.order_items (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+
+  order_id   uuid not null references public.orders (id) on delete cascade,
+  product_id uuid references public.products (id) on delete set null,
+
+  -- Snapshot — stable even if the product is later edited/deleted
+  product_name  text  not null,
+  product_slug  text,
+  product_image text,
+
+  unit_price_pkr numeric(12,2) not null,
+  quantity       int not null check (quantity > 0),
+  line_total_pkr numeric(12,2) not null
+);
+
+create index if not exists order_items_order_idx   on public.order_items (order_id);
+create index if not exists order_items_product_idx on public.order_items (product_id);
+
+alter table public.order_items enable row level security;
+
+-- =========================================================================
+-- PAYMENTS  (payment attempts/events — immutable audit log)
+-- =========================================================================
+create table if not exists public.payments (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+
+  order_id uuid not null references public.orders (id) on delete cascade,
+
+  method     text not null check (method in ('jazzcash','easypaisa')),
+  status     text not null check (status in ('pending','paid','failed','refunded')),
+  amount_pkr numeric(12,2) not null,
+
+  reference text,    -- transaction id (buyer or gateway provided)
+  notes     text     -- admin notes
+);
+
+create index if not exists payments_order_idx on public.payments (order_id);
+
+alter table public.payments enable row level security;

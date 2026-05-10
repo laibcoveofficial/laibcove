@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth/session";
 import { Sidebar } from "@/components/admin/sidebar";
+import { AdminUIProvider } from "@/lib/admin/ui-context";
 
 export default async function AdminPanelLayout({
   children,
@@ -12,9 +13,11 @@ export default async function AdminPanelLayout({
   if (!session) redirect("/admin/login");
 
   return (
-    <div className="flex min-h-screen bg-[var(--surface-soft)]">
-      <Sidebar />
-      <div className="flex min-w-0 flex-1 flex-col">{children}</div>
-    </div>
+    <AdminUIProvider>
+      <div className="flex min-h-screen bg-[var(--surface-soft)]">
+        <Sidebar />
+        <div className="flex min-w-0 flex-1 flex-col">{children}</div>
+      </div>
+    </AdminUIProvider>
   );
 }

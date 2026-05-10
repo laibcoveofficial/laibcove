@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Playfair_Display, Poppins } from "next/font/google";
 import "./globals.css";
 import { FloatingContact } from "@/components/site/floating-contact";
+import { CartProvider } from "@/lib/cart/context";
+import { CartDrawer } from "@/components/cart/cart-drawer";
 
 const playfair = Playfair_Display({
   variable: "--font-heading",
@@ -36,8 +38,11 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-background text-foreground font-sans"
       >
-        {children}
-        <FloatingContact />
+        <CartProvider>
+          {children}
+          <CartDrawer />
+          <FloatingContact />
+        </CartProvider>
       </body>
     </html>
   );

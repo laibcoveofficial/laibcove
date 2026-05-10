@@ -49,6 +49,8 @@ const cols = [
     heading: "Customer Service",
     links: [
       { label: "Contact Us", href: "/contact" },
+      { label: "Track Order", href: "/orders" },
+      { label: "Cart", href: "/cart" },
     ],
   },
 ];
@@ -58,7 +60,7 @@ const socials = [
   { Icon: TikTokIcon, href: SOCIAL_LINKS.tiktok, label: "TikTok" },
 ];
 
-const payments = ["Visa", "Mastercard", "Amex", "PayPal", "Apple Pay", "G Pay"];
+const payments = ["JazzCash", "EasyPaisa"];
 
 export function Footer() {
   return (

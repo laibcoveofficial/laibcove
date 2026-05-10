@@ -6,11 +6,26 @@ import { getSupabase } from "@/lib/supabase/server";
 import { formatPKR, type Product } from "@/lib/supabase/types";
 import { Topbar } from "@/components/admin/topbar";
 import { ProductDeleteButton } from "@/components/admin/product-delete-button";
+import { SaveSuccessModal } from "@/components/admin/save-success-modal";
 
 export const dynamic = "force-dynamic";
 
-export default async function ProductsPage() {
+type SearchParams = Promise<{ saved?: string; name?: string }>;
+
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: SearchParams;
+}) {
   const session = await getSession();
+  const sp = await searchParams;
+  const savedVariant: "created" | "updated" | null =
+    sp?.saved === "created"
+      ? "created"
+      : sp?.saved === "updated"
+        ? "updated"
+        : null;
+  const savedName = typeof sp?.name === "string" ? sp.name : "";
 
   let products: Product[] = [];
   let error: string | null = null;
@@ -98,6 +113,10 @@ export default async function ProductsPage() {
           </div>
         )}
       </div>
+
+      {savedVariant ? (
+        <SaveSuccessModal variant={savedVariant} productName={savedName} />
+      ) : null}
     </>
   );
 }

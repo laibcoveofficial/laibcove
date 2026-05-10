@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart, ImageOff, Sparkles } from "lucide-react";
 import { formatPKR, type Product } from "@/lib/supabase/types";
+import { QuickAddButton } from "@/components/shop/quick-add-button";
 
 export function ShopProductCard({ product }: { product: Product }) {
   const cover = product.images?.[0];
@@ -76,6 +77,8 @@ export function ShopProductCard({ product }: { product: Product }) {
         >
           <Heart className="h-4 w-4" />
         </button>
+
+        <QuickAddButton product={product} />
       </div>
 
       <div className="flex flex-1 flex-col p-5">

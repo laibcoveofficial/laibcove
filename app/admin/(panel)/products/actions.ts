@@ -150,7 +150,9 @@ export async function createProduct(
   }
 
   revalidateProductPaths(data.id);
-  redirect(`/admin/products/${data.id}/edit?created=1`);
+  redirect(
+    `/admin/products?saved=created&name=${encodeURIComponent(fields.name)}`,
+  );
 }
 
 // ---------- UPDATE ----------
@@ -224,7 +226,9 @@ export async function updateProduct(
   await Promise.allSettled(removed.map((u) => deleteProductImage(u)));
 
   revalidateProductPaths(id);
-  return { status: "idle", message: "Saved." };
+  redirect(
+    `/admin/products?saved=updated&name=${encodeURIComponent(fields.name)}`,
+  );
 }
 
 // ---------- DELETE ----------

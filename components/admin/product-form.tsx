@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   Loader2,
@@ -33,17 +33,11 @@ type Props = {
   mode: "create" | "edit";
   categories: Category[];
   product?: Product;
-  showCreatedToast?: boolean;
 };
 
 type PendingFile = { id: string; file: File; previewUrl: string };
 
-export function ProductForm({
-  mode,
-  categories,
-  product,
-  showCreatedToast,
-}: Props) {
+export function ProductForm({ mode, categories, product }: Props) {
   const action = mode === "create" ? createProduct : updateProduct;
   const [state, formAction, pending] = useActionState(action, initial);
 
@@ -53,6 +47,19 @@ export function ProductForm({
   const [newFiles, setNewFiles] = useState<PendingFile[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Keep the <input type="file"> in sync with our newFiles state so the form
+  // submission actually includes every selected file. Browsers don't append to
+  // <input multiple> across separate picks, and clearing .value loses them
+  // entirely. We rebuild .files from state via DataTransfer.
+  useEffect(() => {
+    const input = fileInputRef.current;
+    if (!input) return;
+    if (typeof DataTransfer === "undefined") return;
+    const dt = new DataTransfer();
+    for (const pf of newFiles) dt.items.add(pf.file);
+    input.files = dt.files;
+  }, [newFiles]);
+
   const onAddFiles = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files) return;
     const incoming = Array.from(e.target.files).map((file) => ({
@@ -61,8 +68,9 @@ export function ProductForm({
       previewUrl: URL.createObjectURL(file),
     }));
     setNewFiles((prev) => [...prev, ...incoming].slice(0, 8));
-    // Allow re-selecting the same file
-    e.target.value = "";
+    // Don't clear input.value here — the useEffect above will rebuild .files
+    // from the merged state. (Picking the same file twice is fine: the
+    // dedupe-by-id key keeps a unique row in newFiles anyway.)
   };
 
   const removeNewFile = (id: string) => {
@@ -86,12 +94,6 @@ export function ProductForm({
         <input key={url} type="hidden" name="existingImages" value={url} />
       ))}
 
-      {showCreatedToast ? (
-        <div className="flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800">
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
-          <p>Product created. You can keep editing below.</p>
-        </div>
-      ) : null}
 
       <div className="grid gap-8 lg:grid-cols-3">
         {/* Main column */}
@@ -423,16 +425,6 @@ export function ProductForm({
           className="flex items-start gap-2.5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"
         >
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-          <p>{state.message}</p>
-        </div>
-      ) : null}
-      {state.status === "idle" && state.message ? (
-        <div
-          role="status"
-          aria-live="polite"
-          className="flex items-start gap-2.5 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800"
-        >
-          <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0" />
           <p>{state.message}</p>
         </div>
       ) : null}

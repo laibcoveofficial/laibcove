@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Search, Heart, ShoppingBag, User, Menu, ChevronDown } from "lucide-react";
+import { Search, Heart, User, Menu } from "lucide-react";
+import { CartIconButton } from "@/components/cart/cart-icon-button";
 
 const navLinks = [
   { label: "Home", href: "/" },
@@ -75,16 +76,7 @@ export function Header() {
           >
             <User className="h-[18px] w-[18px]" />
           </button>
-          <button
-            type="button"
-            aria-label="Cart"
-            className="relative inline-flex h-10 w-10 items-center justify-center rounded-full text-foreground/80 transition-colors hover:bg-[var(--brand-soft)] hover:text-[var(--brand)]"
-          >
-            <ShoppingBag className="h-[18px] w-[18px]" />
-            <span className="absolute -top-0.5 -right-0.5 inline-flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--brand)] px-1 text-[10px] font-semibold leading-none text-white">
-              2
-            </span>
-          </button>
+          <CartIconButton />
         </div>
       </div>
     </header>

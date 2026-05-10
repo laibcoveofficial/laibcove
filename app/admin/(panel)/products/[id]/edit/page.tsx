@@ -12,14 +12,11 @@ export const dynamic = "force-dynamic";
 
 export default async function EditProductPage({
   params,
-  searchParams,
 }: {
   params: Promise<{ id: string }>;
-  searchParams: Promise<{ created?: string }>;
 }) {
   const session = await getSession();
   const { id } = await params;
-  const sp = await searchParams;
 
   let product: Product | null = null;
   let categories: Category[] = [];
@@ -76,7 +73,6 @@ export default async function EditProductPage({
               mode="edit"
               product={product}
               categories={categories}
-              showCreatedToast={sp?.created === "1"}
             />
           </div>
         ) : null}

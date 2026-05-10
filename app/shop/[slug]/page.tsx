@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowRight, ImageOff, Sparkles, Star } from "lucide-react";
+import { ImageOff, Sparkles, Star } from "lucide-react";
 import { AnnouncementBar } from "@/components/site/announcement-bar";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
+import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { getSupabase } from "@/lib/supabase/server";
 import { formatPKR, type Product } from "@/lib/supabase/types";
 
@@ -247,13 +248,20 @@ export default async function ProductDetailPage({
               ) : null}
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  href={`/contact?product=${encodeURIComponent(product.name)}`}
-                  className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[var(--brand)]/25 transition-all hover:-translate-y-0.5"
-                >
-                  {soldOut ? "Request Similar" : "Order This Piece"}
-                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </Link>
+                {soldOut ? (
+                  <Link
+                    href={`/contact?product=${encodeURIComponent(product.name)}`}
+                    className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[var(--brand)]/25 transition-all hover:-translate-y-0.5"
+                  >
+                    Request Similar
+                  </Link>
+                ) : (
+                  <AddToCartButton
+                    product={product}
+                    label="Add to Cart"
+                    className="flex-1"
+                  />
+                )}
                 <Link
                   href="/shop"
                   className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/20 bg-white px-7 py-3.5 text-sm font-semibold text-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
@@ -263,8 +271,9 @@ export default async function ProductDetailPage({
               </div>
 
               <p className="mt-6 text-xs text-muted-foreground">
-                Each piece is made-to-order. Turnaround is typically 2–4 weeks
-                — we&apos;ll confirm your timeline before crafting begins.
+                Free delivery on orders over PKR 5,000. Each piece is made with
+                love — turnaround is typically 2–4 weeks once your payment is
+                confirmed.
               </p>
             </div>
           </div>
