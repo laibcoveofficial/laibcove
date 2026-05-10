@@ -1,0 +1,124 @@
+import Image from "next/image";
+import Link from "next/link";
+
+const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    {...props}
+  >
+    <rect
+      x="2.5"
+      y="2.5"
+      width="19"
+      height="19"
+      rx="5"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    />
+    <circle
+      cx="12"
+      cy="12"
+      r="4.2"
+      stroke="currentColor"
+      strokeWidth="1.6"
+    />
+    <circle cx="17.5" cy="6.5" r="1.1" fill="currentColor" />
+  </svg>
+);
+
+const posts = [
+  {
+    image:
+      "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=600&h=600&fit=crop",
+    likes: "2.1k",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=600&h=600&fit=crop",
+    likes: "1.4k",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=600&h=600&fit=crop",
+    likes: "983",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&h=600&fit=crop",
+    likes: "1.7k",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&h=600&fit=crop",
+    likes: "722",
+  },
+  {
+    image:
+      "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=600&h=600&fit=crop",
+    likes: "2.4k",
+  },
+];
+
+export function InstagramGallery() {
+  return (
+    <section className="bg-background py-20 sm:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
+            <span className="inline-flex items-center gap-2">
+              <InstagramIcon className="h-3.5 w-3.5" />
+              @laibcove
+            </span>
+          </span>
+          <h2 className="font-heading mt-3 text-3xl text-foreground sm:text-4xl lg:text-5xl">
+            From our crochet community
+          </h2>
+          <p className="mt-3 text-base text-muted-foreground">
+            Tag <span className="font-medium text-foreground">#laibcoveloops</span>{" "}
+            to be featured in our gallery.
+          </p>
+        </div>
+
+        <div className="mt-12 grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 lg:grid-cols-6">
+          {posts.map((post, i) => (
+            <Link
+              key={i}
+              href="https://www.instagram.com/laibcove?igsh=MTVhMnF6NmlvMXNv"
+              target="_blank"
+              rel="noreferrer"
+              className="group relative block aspect-square overflow-hidden rounded-2xl"
+            >
+              <Image
+                src={post.image}
+                alt=""
+                fill
+                sizes="(min-width: 1024px) 16vw, (min-width: 768px) 33vw, 50vw"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
+              />
+              <div className="absolute inset-0 flex items-center justify-center bg-[var(--brand)]/85 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <div className="flex flex-col items-center gap-1 text-white">
+                  <InstagramIcon className="h-6 w-6" />
+                  <span className="text-xs font-semibold">♥ {post.likes}</span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+
+        <div className="mt-10 flex justify-center">
+          <Link
+            href="https://www.instagram.com/laibcove?igsh=MTVhMnF6NmlvMXNv"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 text-sm font-semibold text-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
+          >
+            <InstagramIcon className="h-4 w-4" />
+            Follow @laibcove
+          </Link>
+        </div>
+      </div>
+    </section>
+  );
+}
