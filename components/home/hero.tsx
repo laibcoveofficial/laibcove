@@ -26,7 +26,7 @@ export function Hero() {
           <h1 className="font-heading mt-6 text-4xl leading-[1.05] text-foreground sm:text-5xl lg:text-[64px]">
             Handmade Crochet
             <br />
-            <span className="italic text-[var(--brand)]">Crafted with Love</span>
+            <span className="text-[var(--brand)]">Crafted with Love</span>
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">

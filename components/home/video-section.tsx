@@ -63,7 +63,7 @@ export function VideoSection() {
           </span>
           <h2 className="font-heading mt-5 text-3xl leading-tight sm:text-4xl lg:text-5xl">
             See the{" "}
-            <span className="italic text-[var(--brand)]">craftsmanship</span>{" "}
+            <span className="text-[var(--brand)]">craftsmanship</span>{" "}
             up close
           </h2>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-white/70">

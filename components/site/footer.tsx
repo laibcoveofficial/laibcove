@@ -162,16 +162,6 @@ export function Footer() {
             © {new Date().getFullYear()} Laibcove. All rights reserved. Made with
             love &amp; yarn.
           </p>
-          <div className="flex flex-wrap items-center gap-2">
-            {payments.map((p) => (
-              <span
-                key={p}
-                className="inline-flex h-7 items-center rounded-md border border-border bg-background px-2.5 text-[10px] font-semibold uppercase tracking-wider text-muted-foreground"
-              >
-                {p}
-              </span>
-            ))}
-          </div>
         </div>
       </div>
     </footer>

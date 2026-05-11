@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ImageOff, Sparkles, Star } from "lucide-react";
+import { Sparkles, Star } from "lucide-react";
 import { AnnouncementBar } from "@/components/site/announcement-bar";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { getSupabase } from "@/lib/supabase/server";
 import { formatPKR, type Product } from "@/lib/supabase/types";
+import { ProductImageGallery } from "@/components/shop/product-image-gallery";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -106,8 +106,6 @@ export default async function ProductDetailPage({
   const product = await loadProduct(slug);
   if (!product) notFound();
 
-  const cover = product.images?.[0];
-  const thumbnails = product.images?.slice(1) ?? [];
   const onSale =
     product.compare_at_price_pkr &&
     product.compare_at_price_pkr > product.price_pkr;
@@ -140,23 +138,13 @@ export default async function ProductDetailPage({
 
           <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
             <div className="space-y-3">
-              <div className="relative aspect-square overflow-hidden rounded-3xl bg-[var(--surface-soft)]">
-                {cover ? (
-                  <Image
-                    src={cover}
-                    alt={product.name}
-                    fill
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    className="object-cover"
-                    priority
-                    unoptimized
-                  />
-                ) : (
-                  <div className="flex h-full w-full items-center justify-center text-muted-foreground">
-                    <ImageOff className="h-10 w-10" />
-                  </div>
-                )}
-                <div className="absolute left-4 top-4 flex flex-col gap-1.5">
+              <div className="relative">
+                <ProductImageGallery 
+                  images={product.images || []} 
+                  name={product.name} 
+                />
+                
+                <div className="absolute left-4 top-4 flex flex-col gap-1.5 z-10 pointer-events-none">
                   {product.is_new_arrival ? (
                     <span className="inline-flex items-center gap-1 rounded-full bg-[var(--brand)] px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
                       <Sparkles className="h-3 w-3" />
@@ -170,26 +158,6 @@ export default async function ProductDetailPage({
                   ) : null}
                 </div>
               </div>
-
-              {thumbnails.length > 0 ? (
-                <div className="grid grid-cols-4 gap-3">
-                  {thumbnails.map((url, i) => (
-                    <div
-                      key={url + i}
-                      className="relative aspect-square overflow-hidden rounded-xl bg-[var(--surface-soft)]"
-                    >
-                      <Image
-                        src={url}
-                        alt=""
-                        fill
-                        sizes="120px"
-                        className="object-cover"
-                        unoptimized
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : null}
 
               {product.video_url ? (
                 <div className="pt-2">

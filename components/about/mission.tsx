@@ -23,7 +23,7 @@ export function AboutMission() {
 
         <p className="font-heading mt-8 text-2xl leading-relaxed text-foreground sm:text-3xl lg:text-4xl">
           To create meaningful handmade crochet pieces that are{" "}
-          <span className="italic text-[var(--brand)]">unique, personal,</span>{" "}
+          <span className="text-[var(--brand)]">unique, personal,</span>{" "}
           and crafted with care for every customer.
         </p>
 

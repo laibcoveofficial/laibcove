@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { createSession } from "@/lib/auth/session";
+import { getSupabase } from "@/lib/supabase/server";
 
 export type LoginState = {
   status: "idle" | "error";
@@ -16,21 +17,35 @@ export async function loginAction(
   const password = String(formData.get("password") || "");
   const next = String(formData.get("next") || "/admin");
 
-  const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  const adminPassword = process.env.ADMIN_PASSWORD || "";
+  if (!email || !password) {
+    return { status: "error", message: "Email and password are required." };
+  }
 
-  if (!adminEmail || !adminPassword) {
-    return {
-      status: "error",
-      message:
-        "Admin credentials are not configured. Set ADMIN_EMAIL and ADMIN_PASSWORD in .env.local.",
+  const supabase = getSupabase();
+  
+  // Call the custom verify_admin function from schema.sql
+  const { data, error } = await supabase.rpc('verify_admin', {
+    p_email: email,
+    p_password: password
+  });
+
+  if (error) {
+    return { 
+      status: "error", 
+      message: error.message || "An error occurred during login." 
     };
   }
 
-  if (email !== adminEmail || password !== adminPassword) {
-    return { status: "error", message: "Invalid email or password." };
+  // verify_admin returns a table of matching admins. 
+  // If no match, it returns an empty array.
+  if (!data || data.length === 0) {
+    return { 
+      status: "error", 
+      message: "Invalid email or password." 
+    };
   }
 
+  // Login successful
   await createSession(email);
   redirect(next.startsWith("/admin") ? next : "/admin");
 }

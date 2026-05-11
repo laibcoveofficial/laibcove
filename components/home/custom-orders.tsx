@@ -46,7 +46,7 @@ export function CustomOrders() {
           </span>
           <h2 className="font-heading mt-5 text-3xl leading-tight text-foreground sm:text-4xl lg:text-5xl">
             Want something{" "}
-            <span className="italic text-[var(--brand)]">made just for you</span>?
+            <span className="text-[var(--brand)]">made just for you</span>?
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
             Tell us your idea. We&apos;ll work with you on every detail — color,

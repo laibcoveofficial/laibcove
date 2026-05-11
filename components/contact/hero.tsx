@@ -22,7 +22,7 @@ export function ContactHero() {
 
           <h1 className="font-heading mt-6 text-4xl leading-[1.05] text-foreground sm:text-5xl lg:text-[60px]">
             Let&apos;s Create Something{" "}
-            <span className="italic text-[var(--brand)]">Beautiful Together</span>
+            <span className="text-[var(--brand)]">Beautiful Together</span>
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">

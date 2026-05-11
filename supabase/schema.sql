@@ -2,7 +2,66 @@
 -- All writes/reads go through the service-role key on the server,
 -- so RLS is enabled but no public policies are needed.
 
-create extension if not exists "pgcrypto";
+create extension if not exists "pgcrypto" with schema extensions;
+
+-- =========================================================================
+-- ADMINS  (admin users — credentials live in the database, not in env)
+-- =========================================================================
+create table if not exists public.admins (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now(),
+
+  email         text unique not null,
+  password_hash text not null,
+  full_name     text,
+  is_active     bool not null default true
+);
+
+create unique index if not exists admins_email_idx on public.admins (lower(email));
+
+alter table public.admins enable row level security;
+
+-- Verify admin credentials. Returns the admin row if email + password match
+-- (uses pgcrypto's bcrypt comparison), otherwise returns nothing.
+-- security definer + locked search_path so the service-role client can call it
+-- without needing direct select on the admins table.
+create or replace function public.verify_admin(p_email text, p_password text)
+returns table(id uuid, email text)
+language plpgsql
+security definer
+set search_path = public, extensions
+as $$
+begin
+  return query
+  select a.id, a.email
+  from public.admins a
+  where lower(a.email) = lower(p_email)
+    and a.is_active = true
+    and a.password_hash = crypt(p_password, a.password_hash);
+end;
+$$;
+
+revoke all on function public.verify_admin(text, text) from public;
+grant execute on function public.verify_admin(text, text) to anon, authenticated, service_role;
+
+-- Seed the first admin. Replace the email/password before running.
+-- Re-run safely: on conflict it just updates the password.
+--
+--   insert into public.admins (email, password_hash)
+--   values (
+--     'admin@laibcove.com',
+--     crypt('change-me-now', gen_salt('bf', 12))
+--   )
+--   on conflict (email) do update
+--     set password_hash = excluded.password_hash,
+--         is_active = true,
+--         updated_at = now();
+
+drop trigger if exists admins_set_updated_at on public.admins;
+create trigger admins_set_updated_at
+  before update on public.admins
+  for each row execute function public.set_updated_at();
 
 -- =========================================================================
 -- LEADS  (custom-order requests from the contact form)

@@ -50,7 +50,7 @@ export function AboutBrand() {
           </span>
           <h2 className="font-heading mt-3 text-3xl leading-tight text-foreground sm:text-4xl lg:text-5xl">
             Made with passion &amp;{" "}
-            <span className="italic text-[var(--brand)]">creativity</span>
+            <span className="text-[var(--brand)]">creativity</span>
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             At Laibcove, every stitch tells a story. What started as a quiet

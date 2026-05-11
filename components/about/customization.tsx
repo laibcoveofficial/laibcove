@@ -49,7 +49,7 @@ export function AboutCustomization() {
             Customization
           </span>
           <h2 className="font-heading mt-3 text-3xl text-foreground sm:text-4xl lg:text-5xl">
-            Made <span className="italic text-[var(--brand)]">uniquely</span>{" "}
+            Made <span className="text-[var(--brand)]">uniquely</span>{" "}
             for you
           </h2>
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
