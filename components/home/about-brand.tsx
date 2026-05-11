@@ -1,9 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Award, Leaf } from "lucide-react";
+import { ArrowRight, Heart, Award, Leaf } from "lucide-react";
 
 const stats = [
-  { icon: Award, value: "2k+", label: "Happy customers" },
+  { icon: Heart, value: "2k+", label: "Happy customers" },
   { icon: Award, value: "5★", label: "Average rating" },
   { icon: Leaf, value: "100%", label: "Eco-friendly yarn" },
 ];
@@ -41,7 +41,7 @@ export function AboutBrand() {
             Our Story
           </span>
           <h2 className="font-heading mt-3 text-3xl leading-tight text-foreground sm:text-4xl lg:text-5xl">
-            A and B
+            Made with passion and creativity
           </h2>
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             At Laibcove, every stitch tells a story. What started as a quiet
