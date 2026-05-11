@@ -44,7 +44,7 @@ export function Hero() {
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
-              href="/collection"
+              href="/shop"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/20 bg-white/70 px-7 py-3.5 text-sm font-semibold tracking-wide text-foreground backdrop-blur transition-all hover:border-[var(--brand)] hover:text-[var(--brand)]"
             >
               Explore Collection

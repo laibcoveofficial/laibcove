@@ -76,14 +76,14 @@ export function CustomOrders() {
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
-              href="/custom"
+              href="/contact"
               className="group inline-flex items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[var(--brand)]/25 transition-all hover:-translate-y-0.5"
             >
               Request Custom Order
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Link>
             <Link
-              href="/custom#examples"
+              href="/contact#examples"
               className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/20 bg-white px-7 py-3.5 text-sm font-semibold text-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
             >
               See Past Commissions
