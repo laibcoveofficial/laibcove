@@ -3,8 +3,8 @@ import { Star, Quote } from "lucide-react";
 
 const testimonials = [
   {
-    name: "Amelia R.",
-    location: "Sydney, AU",
+    name: "Ayesha Khan",
+    location: "Karachi, PK",
     avatar:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
     rating: 5,
@@ -15,28 +15,40 @@ const testimonials = [
     productName: "Daisy Bloom Tote",
   },
   {
-    name: "Mei L.",
-    location: "Melbourne, AU",
+    name: "Padma",
+    location: "Lahore, PK",
     avatar:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
     rating: 5,
     quote:
-      "I commissioned a custom plushie for my daughter and the team made it from a scribbled drawing she did. She bursts into tears every time she looks at it. Perfection.",
+      "I commissioned a custom gajre for my daughter's wedding and it was the highlight. You can feel the care that goes into every order.",
     productImage:
       "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&h=300&fit=crop",
-    productName: "Custom Plushie",
+    productName: "Custom Gajre",
   },
   {
-    name: "Sophia K.",
-    location: "Brisbane, AU",
+    name: "Shahez",
+    location: "Islamabad, PK",
     avatar:
       "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
     rating: 5,
     quote:
-      "The packaging alone made me cry happy tears. You can feel the care that goes into every order. The throw pillow looks gorgeous on my couch.",
+      "The packaging alone made me cry happy tears. The forever bouquet looks gorgeous on my dining table. Highly recommend!",
     productImage:
       "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=300&h=300&fit=crop",
-    productName: "Boho Pillow",
+    productName: "Rose Bouquet",
+  },
+  {
+    name: "Zainab Bibi",
+    location: "Rawalpindi, PK",
+    avatar:
+      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=200&fit=crop",
+    rating: 5,
+    quote:
+      "Best crochet items in Pakistan! The quality of yarn is amazing and the colors are so vibrant. Will definitely buy again.",
+    productImage:
+      "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=300&h=300&fit=crop",
+    productName: "Peach Clutch",
   },
 ];
 

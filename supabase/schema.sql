@@ -118,13 +118,13 @@ alter table public.categories enable row level security;
 -- Seed default categories (idempotent).
 insert into public.categories (slug, name, description, display_order) values
   ('bags',       'Bags',        'Totes, crossbody, market bags & more',    1),
-  ('plushies',   'Plushies',    'Cuddle companions made one stitch at a time', 2),
+  ('gajre',      'Gajre',       'Traditional crochet wristlets & garlands', 2),
   ('clothing',   'Clothing',    'Tops, cardigans, dresses & accessories',  3),
   ('baby',       'Baby Items',  'Soft, safe, handmade for the littlest ones', 4),
   ('home-decor', 'Home Decor',  'Pillows, throws, wall hangings & more',   5),
   ('keychains',  'Keychains',   'Tiny crochet companions for keys & bags', 6),
-  ('flowers',    'Flowers',     'Forever bouquets — never wilt, always pretty', 7),
-  ('blankets',   'Blankets',    'Cozy, oversized, made to last',           8)
+  ('flowers',    'Flowers',     'Forever stems — never wilt, always pretty', 7),
+  ('bouquets',   'Bouquets',    'Handcrafted arrangements for every occasion', 8)
 on conflict (slug) do nothing;
 
 -- =========================================================================

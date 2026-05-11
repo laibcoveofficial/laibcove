@@ -32,15 +32,7 @@ export function AboutBrand() {
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="absolute -top-6 -left-4 hidden items-center gap-3 rounded-2xl border border-border bg-white px-4 py-3 shadow-xl sm:flex">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--brand-soft)] text-[var(--brand)]">
-              <Heart className="h-5 w-5" fill="currentColor" strokeWidth={0} />
-            </div>
-            <div className="text-sm leading-tight">
-              <p className="font-semibold text-foreground">Made by hand</p>
-              <p className="text-muted-foreground">Stitched in Australia</p>
-            </div>
-          </div>
+
         </div>
 
         {/* Copy */}
@@ -55,7 +47,7 @@ export function AboutBrand() {
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             At Laibcove, every stitch tells a story. What started as a quiet
             evening hobby grew into a small studio crafting heirloom-quality
-            crochet pieces — bags, plushies, decor, and gifts that bring warmth
+            crochet pieces — bags, gajre, decor, and gifts that bring warmth
             and beauty into your everyday.
           </p>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">

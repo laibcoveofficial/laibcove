@@ -30,7 +30,7 @@ export function Hero() {
           </h1>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
-            Discover beautifully handcrafted crochet bags, plushies, and home
+            Discover beautifully handcrafted crochet bags, gajre, and home
             decor — made from premium yarn with attention to every single
             stitch.
           </p>
@@ -51,43 +51,7 @@ export function Hero() {
             </Link>
           </div>
 
-          {/* Social proof */}
-          <div className="mt-10 flex items-center gap-6">
-            <div className="flex -space-x-3">
-              {[
-                "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop",
-                "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=80&h=80&fit=crop",
-                "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=80&h=80&fit=crop",
-                "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=80&h=80&fit=crop",
-              ].map((src, i) => (
-                <div
-                  key={i}
-                  className="relative h-10 w-10 overflow-hidden rounded-full border-2 border-white shadow-sm"
-                >
-                  <Image
-                    src={src}
-                    alt=""
-                    fill
-                    sizes="40px"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-            <div className="text-sm">
-              <div className="flex items-center gap-1 text-[var(--brand)]">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star
-                    key={i}
-                    className="h-4 w-4 fill-current"
-                    strokeWidth={0}
-                  />
-                ))}
-                <span className="ml-1 font-semibold text-foreground">4.9</span>
-              </div>
-              <p className="text-muted-foreground">Loved by 2,000+ customers</p>
-            </div>
-          </div>
+
         </div>
 
         {/* Imagery */}
@@ -123,16 +87,7 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Floating card */}
-          <div className="absolute -bottom-6 -left-2 hidden items-center gap-3 rounded-2xl border border-border bg-white p-3 pr-5 shadow-xl sm:flex">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--brand-soft)] text-[var(--brand)]">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div className="text-sm">
-              <p className="font-semibold text-foreground">100% Handmade</p>
-              <p className="text-muted-foreground">Premium quality yarn</p>
-            </div>
-          </div>
+
         </div>
       </div>
     </section>

@@ -6,7 +6,7 @@ import { Plus, Minus } from "lucide-react";
 const faqs = [
   {
     q: "How long does a custom order take?",
-    a: "Most custom pieces take 2–4 weeks from design approval to delivery. Larger items like blankets or bulk orders can take 4–6 weeks. We'll always confirm your timeline before starting.",
+    a: "Most custom pieces take 2–4 weeks from design approval to delivery. Larger items or bulk orders can take 4–6 weeks. We'll always confirm your timeline before starting.",
   },
   {
     q: "Can I request my own design?",

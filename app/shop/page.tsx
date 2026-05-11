@@ -12,7 +12,7 @@ import type { Category, Product } from "@/lib/supabase/types";
 export const metadata: Metadata = {
   title: "Shop — Handmade Crochet by Laibcove",
   description:
-    "Browse our full collection of handmade crochet bags, plushies, clothing, and home decor. Every piece stitched with love.",
+    "Browse our full collection of handmade crochet bags, gajre, bouquets, and home decor. Every piece stitched with love.",
 };
 
 export const dynamic = "force-dynamic";
@@ -102,7 +102,7 @@ export default async function ShopPage({
             </h1>
             <p className="mx-auto mt-4 max-w-2xl text-base text-muted-foreground sm:text-lg">
               {activeCat?.description ??
-                "Browse our full collection of handmade crochet — bags, plushies, decor and more, all stitched with love."}
+                "Browse our full collection of handmade crochet — bags, gajre, bouquets, and more, all stitched with love."}
             </p>
           </div>
         </section>

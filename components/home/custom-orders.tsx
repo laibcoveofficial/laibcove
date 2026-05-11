@@ -10,8 +10,8 @@ const features = [
   },
   {
     icon: Sparkles,
-    title: "Personalized Plushies",
-    desc: "From your sketch or photo to a one-of-a-kind cuddle companion.",
+    title: "Custom Gajre & Bouquets",
+    desc: "Personalized crochet gajre or forever bouquets for your special events.",
   },
   {
     icon: Tag,
@@ -102,21 +102,7 @@ export function CustomOrders() {
               className="object-cover"
             />
           </div>
-          <div className="absolute -bottom-5 left-6 right-6 rounded-2xl border border-border bg-white p-4 shadow-xl sm:left-auto sm:-right-4 sm:w-72">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--brand-soft)] text-[var(--brand)]">
-                <Sparkles className="h-5 w-5" />
-              </div>
-              <div className="text-sm">
-                <p className="font-semibold text-foreground">
-                  Turnaround: 2–3 weeks
-                </p>
-                <p className="text-muted-foreground">
-                  Free design consultation
-                </p>
-              </div>
-            </div>
-          </div>
+
         </div>
       </div>
     </section>

@@ -25,8 +25,8 @@ const features = [
   },
   {
     icon: Truck,
-    title: "Worldwide Shipping",
-    desc: "Carefully wrapped and shipped to your door — no matter where you are.",
+    title: "Nationwide Shipping",
+    desc: "Carefully wrapped and delivered to your doorstep, anywhere in Pakistan.",
   },
   {
     icon: ShieldCheck,

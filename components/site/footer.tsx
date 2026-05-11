@@ -79,7 +79,7 @@ export function Footer() {
               />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Handmade crochet creations — bags, plushies, decor, and gifts —
+              Handmade crochet creations — bags, gajre, decor, and bouquets —
               stitched slowly and shipped worldwide from our small studio.
             </p>
 

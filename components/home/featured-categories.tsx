@@ -6,13 +6,13 @@ import type { Category } from "@/lib/supabase/types";
 
 const FALLBACK_IMAGES: Record<string, string> = {
   bags: "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=600&h=750&fit=crop",
-  plushies: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=600&h=750&fit=crop",
+  gajre: "https://images.unsplash.com/photo-1590595906931-81f04f0ccebb?w=600&h=750&fit=crop",
   flowers: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=600&h=750&fit=crop",
+  bouquets: "https://images.unsplash.com/photo-1582794541440-3497a927d659?w=600&h=750&fit=crop",
   clothing: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&h=750&fit=crop",
   "home-decor": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&h=750&fit=crop",
   baby: "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600&h=750&fit=crop",
   keychains: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=600&h=750&fit=crop",
-  blankets: "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=600&h=750&fit=crop",
 };
 
 async function loadCategories() {

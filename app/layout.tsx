@@ -21,7 +21,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Laibcove — Handmade Crochet Creations",
   description:
-    "Beautifully handcrafted crochet bags, plushies, decor, and accessories — made with premium yarn and love.",
+    "Beautifully handcrafted crochet bags, gajre, bouquets, and accessories — made with premium yarn and love.",
 };
 
 export default function RootLayout({
