@@ -20,13 +20,15 @@ async function loadNewArrivals(): Promise<Product[]> {
   }
 }
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 export async function NewArrivals() {
   const products = await loadNewArrivals();
   if (products.length === 0) return null;
 
   return (
     <section className="bg-background py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <MotionSection className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-end justify-between gap-6 sm:flex-row">
           <div className="max-w-xl">
             <span className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
@@ -55,7 +57,7 @@ export async function NewArrivals() {
             <ShopProductCard key={p.id} product={p} />
           ))}
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

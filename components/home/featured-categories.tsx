@@ -5,14 +5,14 @@ import { getSupabase } from "@/lib/supabase/server";
 import type { Category } from "@/lib/supabase/types";
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  bags: "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=600&h=750&fit=crop",
-  gajre: "https://images.unsplash.com/photo-1590595906931-81f04f0ccebb?w=600&h=750&fit=crop",
-  flowers: "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=600&h=750&fit=crop",
-  bouquets: "https://images.unsplash.com/photo-1582794541440-3497a927d659?w=600&h=750&fit=crop",
-  clothing: "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&h=750&fit=crop",
-  "home-decor": "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&h=750&fit=crop",
-  baby: "https://images.unsplash.com/photo-1522771930-78848d9293e8?w=600&h=750&fit=crop",
-  keychains: "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=600&h=750&fit=crop",
+  bags: "/bag.webp",
+  gajre: "/gajry1.PNG",
+  flowers: "/flowers.PNG",
+  bouquets: "/bouqeet1.jpeg",
+  "mobile-covers": "/mobilecover.jfif",
+  "flowers-pot": "/flowerpot.jpeg",
+  baby: "/babyitems.jpg",
+  keychains: "/flower-keychains.PNG",
 };
 
 async function loadCategories() {
@@ -45,13 +45,15 @@ async function loadCategories() {
   }
 }
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 export async function FeaturedCategories() {
   const { categories, counts } = await loadCategories();
   if (categories.length === 0) return null;
 
   return (
     <section className="bg-background py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <MotionSection className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-end justify-between gap-6 sm:flex-row sm:items-end">
           <div className="max-w-xl">
             <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
@@ -119,7 +121,7 @@ export async function FeaturedCategories() {
             );
           })}
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

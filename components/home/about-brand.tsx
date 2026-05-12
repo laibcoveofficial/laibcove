@@ -2,6 +2,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Heart, Award, Leaf } from "lucide-react";
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 const stats = [
   { icon: Heart, value: "2k+", label: "Happy customers" },
   { icon: Award, value: "5★", label: "Average rating" },
@@ -11,12 +13,12 @@ const stats = [
 export function AboutBrand() {
   return (
     <section className="bg-background py-20 sm:py-24">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+      <MotionSection className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
         {/* Imagery */}
         <div className="relative">
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-[var(--brand)]/15">
             <Image
-              src="https://images.unsplash.com/photo-1556909114-44e3e9399a2e?w=900&h=1100&fit=crop"
+              src="/ourstory.png"
               alt="Founder crocheting at workspace"
               fill
               sizes="(min-width: 1024px) 50vw, 100vw"
@@ -25,14 +27,13 @@ export function AboutBrand() {
           </div>
           <div className="absolute -bottom-6 -right-4 hidden aspect-square w-48 overflow-hidden rounded-3xl border-4 border-background shadow-xl sm:block">
             <Image
-              src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=400&h=400&fit=crop"
+              src="/ourstory2.png"
               alt="Crochet workspace"
               width={400}
               height={400}
               className="h-full w-full object-cover"
             />
           </div>
-
         </div>
 
         {/* Copy */}
@@ -78,7 +79,7 @@ export function AboutBrand() {
             <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

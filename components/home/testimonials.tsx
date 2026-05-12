@@ -56,6 +56,8 @@ const testimonials = [
   },
 ];
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 export function Testimonials() {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
@@ -78,7 +80,7 @@ export function Testimonials() {
         className="pointer-events-none absolute -top-32 left-1/2 h-96 w-[60%] -translate-x-1/2 rounded-full bg-white/40 blur-3xl"
       />
 
-      <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <MotionSection className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-end justify-between gap-8 sm:flex-row sm:items-end">
           <div className="max-w-2xl">
             <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
@@ -172,7 +174,7 @@ export function Testimonials() {
             ))}
           </div>
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

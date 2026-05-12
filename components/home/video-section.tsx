@@ -1,5 +1,10 @@
+"use client";
+
 import Image from "next/image";
 import { Play, Sparkles } from "lucide-react";
+import { useState } from "react";
+
+import { MotionSection } from "@/components/ui/motion-section";
 
 const stats = [
   { value: "1,200+", label: "Pieces stitched" },
@@ -8,6 +13,8 @@ const stats = [
 ];
 
 export function VideoSection() {
+  const [isPlaying, setIsPlaying] = useState(false);
+
   return (
     <section className="relative overflow-hidden bg-foreground py-20 text-white sm:py-24">
       <div
@@ -15,37 +22,50 @@ export function VideoSection() {
         className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,_rgba(23,182,208,0.25),_transparent_60%)]"
       />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
+      <MotionSection className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
         {/* Video preview */}
         <div className="relative">
-          <div className="relative aspect-video overflow-hidden rounded-3xl shadow-2xl">
-            <Image
-              src="https://images.unsplash.com/photo-1556909114-44e3e9399a2e?w=1200&h=700&fit=crop"
-              alt="Behind the scenes — crochet craftsmanship"
-              fill
-              sizes="(min-width: 1024px) 50vw, 100vw"
-              className="object-cover"
-            />
-            <div className="absolute inset-0 bg-black/30" />
+          <div className="relative aspect-video overflow-hidden rounded-3xl shadow-2xl bg-black">
+            {!isPlaying ? (
+              <>
+                <Image
+                  src="/ourstory2.png"
+                  alt="Behind the scenes — crochet craftsmanship"
+                  fill
+                  sizes="(min-width: 1024px) 50vw, 100vw"
+                  className="object-cover opacity-60"
+                />
+                <div className="absolute inset-0 bg-black/20" />
 
-            <button
-              type="button"
-              aria-label="Play video"
-              className="absolute inset-0 m-auto flex h-20 w-20 items-center justify-center"
-            >
-              <span
-                aria-hidden
-                className="absolute inset-0 rounded-full bg-[var(--brand)]/40 animate-ping"
+                <button
+                  type="button"
+                  onClick={() => setIsPlaying(true)}
+                  aria-label="Play video"
+                  className="absolute inset-0 m-auto flex h-20 w-20 items-center justify-center"
+                >
+                  <span
+                    aria-hidden
+                    className="absolute inset-0 rounded-full bg-[var(--brand)]/40 animate-ping"
+                  />
+                  <span className="relative flex h-20 w-20 items-center justify-center rounded-full bg-white text-[var(--brand)] shadow-2xl transition-transform hover:scale-110">
+                    <Play className="ml-1 h-8 w-8 fill-current" strokeWidth={0} />
+                  </span>
+                </button>
+
+                <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-black/50 px-3 py-1.5 text-xs font-medium backdrop-blur">
+                  <span className="h-2 w-2 rounded-full bg-[var(--brand)]" />
+                  Behind the loops · Watch Short
+                </div>
+              </>
+            ) : (
+              <iframe
+                src="https://www.youtube.com/embed/kgqj_CsAVks?autoplay=1"
+                title="Behind the scenes — crochet craftsmanship"
+                className="h-full w-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
               />
-              <span className="relative flex h-20 w-20 items-center justify-center rounded-full bg-white text-[var(--brand)] shadow-2xl transition-transform hover:scale-110">
-                <Play className="ml-1 h-8 w-8 fill-current" strokeWidth={0} />
-              </span>
-            </button>
-
-            <div className="absolute bottom-4 left-4 inline-flex items-center gap-2 rounded-full bg-black/50 px-3 py-1.5 text-xs font-medium backdrop-blur">
-              <span className="h-2 w-2 rounded-full bg-[var(--brand)]" />
-              Behind the loops · 2:14
-            </div>
+            )}
           </div>
 
           {/* Decorative ring */}
@@ -83,7 +103,7 @@ export function VideoSection() {
             ))}
           </dl>
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

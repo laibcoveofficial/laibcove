@@ -25,6 +25,8 @@ const features = [
   },
 ];
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 export function CustomOrders() {
   return (
     <section className="relative overflow-hidden bg-[var(--brand-soft)] py-20 sm:py-24">
@@ -37,7 +39,7 @@ export function CustomOrders() {
         className="pointer-events-none absolute -bottom-24 -left-24 h-80 w-80 rounded-full bg-[var(--brand)]/15 blur-3xl"
       />
 
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
+      <MotionSection className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-12 lg:gap-16 lg:px-8">
         {/* Copy + features */}
         <div className="lg:col-span-7">
           <span className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)] backdrop-blur">
@@ -95,16 +97,15 @@ export function CustomOrders() {
         <div className="relative lg:col-span-5">
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-[var(--brand)]/20">
             <Image
-              src="https://images.unsplash.com/photo-1620207418302-439b387441b0?w=900&h=1100&fit=crop"
+              src="/customorder.png"
               alt="Custom crochet commission"
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
               className="object-cover"
             />
           </div>
-
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

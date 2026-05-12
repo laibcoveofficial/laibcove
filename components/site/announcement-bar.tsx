@@ -1,3 +1,6 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { Sparkles, Heart } from "lucide-react";
 
 const messages = [
@@ -7,8 +10,14 @@ const messages = [
 
 export function AnnouncementBar() {
   return (
-    <div className="w-full bg-[var(--brand)] text-[var(--brand-foreground)]">
-      <div className="mx-auto flex max-w-7xl items-center justify-center gap-6 overflow-hidden px-4 py-2 text-xs font-medium tracking-wide sm:text-[13px]">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.8 }}
+      className="w-full bg-[var(--brand)] text-[var(--brand-foreground)]"
+      suppressHydrationWarning
+    >
+      <div className="mx-auto flex max-w-7xl items-center justify-center gap-6 overflow-hidden px-4 py-2 text-xs font-medium tracking-wide sm:text-[13px]" suppressHydrationWarning>
         <div className="hidden items-center gap-8 md:flex">
           {messages.map(({ icon: Icon, text }, i) => (
             <span key={i} className="inline-flex items-center gap-2">
@@ -22,6 +31,6 @@ export function AnnouncementBar() {
           Free shipping on orders over $50
         </span>
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -40,10 +40,12 @@ const features = [
   },
 ];
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 export function WhyChooseUs() {
   return (
     <section className="bg-[var(--surface-soft)] py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <MotionSection className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
             The Laibcove Promise
@@ -81,7 +83,7 @@ export function WhyChooseUs() {
             </div>
           ))}
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

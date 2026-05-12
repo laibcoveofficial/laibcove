@@ -24,9 +24,16 @@ const TikTokIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const FacebookIcon = (props: React.SVGProps<SVGSVGElement>) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+  </svg>
+);
+
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/laibcove?igsh=MTVhMnF6NmlvMXNv",
   tiktok: "https://www.tiktok.com/@laibcove?_r=1&_t=ZS-96C5mVsLtzR",
+  facebook: "https://www.facebook.com/share/1RCPhvhvMQ/?mibextid=wwXIfr",
 };
 
 const cols = [
@@ -58,6 +65,7 @@ const cols = [
 const socials = [
   { Icon: InstagramIcon, href: SOCIAL_LINKS.instagram, label: "Instagram" },
   { Icon: TikTokIcon, href: SOCIAL_LINKS.tiktok, label: "TikTok" },
+  { Icon: FacebookIcon, href: SOCIAL_LINKS.facebook, label: "Facebook" },
 ];
 
 const payments = ["JazzCash", "EasyPaisa"];
@@ -111,13 +119,34 @@ export function Footer() {
             </ul>
           </div>
 
-          {cols.map((col) => (
-            <div key={col.heading} className="lg:col-span-2">
+          {/* Shop column */}
+          <div className="lg:col-span-2">
+            <h4 className="text-sm font-semibold uppercase tracking-[0.12em] text-foreground">
+              Shop
+            </h4>
+            <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
+              {cols[0].links.map((link) => (
+                <li key={link.label}>
+                  <Link
+                    href={link.href}
+                    className="transition-colors hover:text-[var(--brand)]"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Grouped Information, Customer Service, and Follow with no space between them */}
+          <div className="col-span-2 sm:col-span-3 lg:col-span-6 grid grid-cols-1 sm:grid-cols-3 gap-8 lg:gap-0">
+            {/* Information */}
+            <div className="lg:pr-4">
               <h4 className="text-sm font-semibold uppercase tracking-[0.12em] text-foreground">
-                {col.heading}
+                {cols[1].heading}
               </h4>
               <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
-                {col.links.map((link) => (
+                {cols[1].links.map((link) => (
                   <li key={link.label}>
                     <Link
                       href={link.href}
@@ -129,31 +158,50 @@ export function Footer() {
                 ))}
               </ul>
             </div>
-          ))}
 
-          {/* Social */}
-          <div className="col-span-2 sm:col-span-3 lg:col-span-2">
-            <h4 className="text-sm font-semibold uppercase tracking-[0.12em] text-foreground">
-              Follow
-            </h4>
-            <div className="mt-5 flex flex-wrap gap-2.5">
-              {socials.map(({ Icon, href, label }) => (
-                <Link
-                  key={label}
-                  href={href}
-                  target="_blank"
-                  rel="noreferrer"
-                  aria-label={label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground/70 transition-colors hover:border-[var(--brand)] hover:bg-[var(--brand)] hover:text-white"
-                >
-                  <Icon className="h-4 w-4" />
-                </Link>
-              ))}
+            {/* Customer Service */}
+            <div className="lg:pr-4">
+              <h4 className="text-sm font-semibold uppercase tracking-[0.12em] text-foreground">
+                {cols[2].heading}
+              </h4>
+              <ul className="mt-5 space-y-3 text-sm text-muted-foreground">
+                {cols[2].links.map((link) => (
+                  <li key={link.label}>
+                    <Link
+                      href={link.href}
+                      className="transition-colors hover:text-[var(--brand)]"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
-              Tag <span className="font-medium text-foreground">#laibcoveloops</span>{" "}
-              on your socials and we&apos;ll feature you.
-            </p>
+
+            {/* Social / Follow */}
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-[0.12em] text-foreground">
+                Follow
+              </h4>
+              <div className="mt-5 flex flex-wrap gap-2.5">
+                {socials.map(({ Icon, href, label }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={label}
+                    className="flex h-10 w-10 items-center justify-center rounded-full border border-border bg-background text-foreground/70 transition-colors hover:border-[var(--brand)] hover:bg-[var(--brand)] hover:text-white"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </Link>
+                ))}
+              </div>
+              <p className="mt-5 text-xs leading-relaxed text-muted-foreground">
+                Tag <span className="font-medium text-foreground">#laibcoveloops</span>{" "}
+                on your socials and we&apos;ll feature you.
+              </p>
+            </div>
           </div>
         </div>
 

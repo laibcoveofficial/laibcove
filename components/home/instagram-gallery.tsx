@@ -29,42 +29,20 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const posts = [
-  {
-    image:
-      "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=600&h=600&fit=crop",
-    likes: "2.1k",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=600&h=600&fit=crop",
-    likes: "1.4k",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1561181286-d3fee7d55364?w=600&h=600&fit=crop",
-    likes: "983",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&h=600&fit=crop",
-    likes: "1.7k",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=600&h=600&fit=crop",
-    likes: "722",
-  },
-  {
-    image:
-      "https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=600&h=600&fit=crop",
-    likes: "2.4k",
-  },
+  { image: "/gajry2.PNG", likes: "2.1k" },
+  { image: "/babyitems.jpg", likes: "1.4k" },
+  { image: "/flowerpot.jpeg", likes: "983" },
+  { image: "/mobilecover.jfif", likes: "1.7k" },
+  { image: "/bag.webp", likes: "722" },
+  { image: "/gajry3.jpeg", likes: "2.4k" },
 ];
+
+import { MotionSection } from "@/components/ui/motion-section";
 
 export function InstagramGallery() {
   return (
     <section className="bg-background py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <MotionSection className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
             <span className="inline-flex items-center gap-2">
@@ -118,7 +96,7 @@ export function InstagramGallery() {
             Follow @laibcove
           </Link>
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

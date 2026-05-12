@@ -1,10 +1,12 @@
 import Image from "next/image";
 import { Mail, Sparkles, ArrowRight } from "lucide-react";
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 export function Newsletter() {
   return (
     <section className="bg-background py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <MotionSection className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="relative overflow-hidden rounded-3xl bg-[var(--brand-soft)]">
           <div
             aria-hidden
@@ -62,7 +64,7 @@ export function Newsletter() {
             <div className="relative hidden lg:block">
               <div className="relative ml-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-3xl shadow-xl">
                 <Image
-                  src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=700&h=900&fit=crop"
+                  src="/flowers3.PNG"
                   alt="Crochet flatlay"
                   fill
                   sizes="(min-width: 1024px) 33vw, 100vw"
@@ -80,7 +82,7 @@ export function Newsletter() {
             </div>
           </div>
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }

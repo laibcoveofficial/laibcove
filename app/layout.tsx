@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: "Laibcove — Handmade Crochet Creations",
   description:
     "Beautifully handcrafted crochet bags, gajre, bouquets, and accessories — made with premium yarn and love.",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
@@ -32,8 +35,25 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${playfair.variable} ${poppins.variable} h-full antialiased`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                const removeAttr = () => {
+                  document.querySelectorAll('[bis_skin_checked]').forEach(el => el.removeAttribute('bis_skin_checked'));
+                };
+                removeAttr();
+                const observer = new MutationObserver(removeAttr);
+                observer.observe(document.documentElement, { attributes: true, subtree: true, attributeFilter: ['bis_skin_checked'] });
+              })();
+            `,
+          }}
+        />
+      </head>
       <body
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-background text-foreground font-sans"

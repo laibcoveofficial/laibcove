@@ -20,13 +20,15 @@ async function loadBestSellers(): Promise<Product[]> {
   }
 }
 
+import { MotionSection } from "@/components/ui/motion-section";
+
 export async function BestSellers() {
   const products = await loadBestSellers();
   if (products.length === 0) return null;
 
   return (
     <section className="bg-[var(--surface-soft)] py-20 sm:py-24">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <MotionSection className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-end justify-between gap-6 sm:flex-row">
           <div className="max-w-xl">
             <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
@@ -54,7 +56,7 @@ export async function BestSellers() {
             <ShopProductCard key={p.id} product={p} />
           ))}
         </div>
-      </div>
+      </MotionSection>
     </section>
   );
 }
