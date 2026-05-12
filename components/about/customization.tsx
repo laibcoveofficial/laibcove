@@ -27,11 +27,11 @@ export function AboutCustomization() {
         <div className="relative lg:col-span-5">
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-[var(--brand)]/15">
             <Image
-              src="https://images.unsplash.com/photo-1620207418302-439b387441b0?w=900&h=1100&fit=crop"
-              alt="Customizing a crochet piece"
+              src="/custom-flatlay.png"
+              alt="Customizing a crochet piece with premium yarn selection"
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
           </div>
           <div className="absolute -bottom-5 left-6 right-6 rounded-2xl border border-border bg-white p-4 shadow-xl sm:left-auto sm:-right-4 sm:w-72">

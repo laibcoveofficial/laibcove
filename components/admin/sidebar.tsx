@@ -41,46 +41,46 @@ export function Sidebar() {
       />
 
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col border-r border-border bg-[var(--surface-soft)] transition-transform duration-300 ease-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-64 shrink-0 flex-col border-r border-white/10 bg-[var(--brand)] transition-transform duration-300 ease-out lg:sticky lg:top-0 lg:h-screen lg:translate-x-0 ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
         aria-hidden={!sidebarOpen ? undefined : false}
       >
-        <div className="flex h-16 items-center justify-between gap-2 border-b border-border px-6">
+        <div className="flex h-16 items-center justify-between gap-2 border-b border-white/10 px-6">
           <Image
             src="/logo.png"
             alt="Laibcove"
             width={673}
             height={245}
-            className="h-8 w-auto object-contain"
+            className="h-8 w-auto object-contain brightness-0 invert"
           />
           <button
             type="button"
             onClick={closeSidebar}
             aria-label="Close menu"
-            className="-mr-2 inline-flex h-9 w-9 items-center justify-center rounded-full text-foreground/70 transition-colors hover:bg-[var(--surface-soft)] lg:hidden"
+            className="-mr-2 inline-flex h-9 w-9 items-center justify-center rounded-full text-white/70 transition-colors hover:bg-white/10 lg:hidden"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         <nav className="flex-1 overflow-y-auto px-3 py-5">
-          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+          <p className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">
             Manage
           </p>
           <ul className="space-y-1">
             {links.map(({ label, href, icon: Icon, exact }) => {
               const active = isActive(href, exact);
               return (
-                <li key={href}>
-                  <Link
-                    href={href}
-                    className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                      active
-                        ? "bg-[var(--brand-soft)] text-[var(--brand)]"
-                        : "text-foreground/70 hover:bg-[var(--surface-soft)] hover:text-foreground"
-                    }`}
-                  >
+                  <li key={href}>
+                    <Link
+                      href={href}
+                      className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
+                        active
+                          ? "bg-white text-[var(--brand)] shadow-sm"
+                          : "text-white/80 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
                     <Icon className="h-4 w-4" />
                     {label}
                   </Link>
@@ -90,10 +90,10 @@ export function Sidebar() {
           </ul>
         </nav>
 
-        <form action="/admin/logout" method="post" className="border-t border-border p-3">
+        <form action="/admin/logout" method="post" className="border-t border-white/10 p-3">
           <button
             type="submit"
-            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-foreground/70 transition-colors hover:bg-[var(--surface-soft)] hover:text-foreground"
+            className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-white/80 transition-colors hover:bg-white/10 hover:text-white"
           >
             <LogOut className="h-4 w-4" />
             Sign out

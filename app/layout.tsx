@@ -4,6 +4,7 @@ import "./globals.css";
 import { FloatingContact } from "@/components/site/floating-contact";
 import { CartProvider } from "@/lib/cart/context";
 import { CartDrawer } from "@/components/cart/cart-drawer";
+import Script from "next/script";
 
 const playfair = Playfair_Display({
   variable: "--font-heading",
@@ -38,8 +39,13 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${playfair.variable} ${poppins.variable} h-full antialiased`}
     >
-      <head>
-        <script
+      <body
+        suppressHydrationWarning
+        className="min-h-full flex flex-col bg-background text-foreground font-sans"
+      >
+        <Script
+          id="remove-bis-skin-checked"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
@@ -53,11 +59,6 @@ export default function RootLayout({
             `,
           }}
         />
-      </head>
-      <body
-        suppressHydrationWarning
-        className="min-h-full flex flex-col bg-background text-foreground font-sans"
-      >
         <CartProvider>
           {children}
           <CartDrawer />

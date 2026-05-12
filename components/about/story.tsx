@@ -42,23 +42,15 @@ export function AboutStory() {
               Years later, that same rhythm runs through every piece we make.
             </p>
 
-            <div className="relative mt-8 overflow-hidden rounded-3xl">
-              <Image
-                src="https://images.unsplash.com/photo-1591561954557-26941169b49e?w=900&h=1100&fit=crop"
-                alt="Hands crocheting"
-                width={900}
-                height={1100}
-                className="h-full w-full object-cover"
-              />
-            </div>
+
           </div>
 
           <div className="lg:col-span-7">
-            <ol className="relative space-y-8 border-l border-dashed border-[var(--brand)]/30 pl-8">
+            <ol className="relative space-y-12 border-l border-dashed border-[var(--brand)]/30 pl-14">
               {chapters.map(({ icon: Icon, title, desc }) => (
                 <li key={title} className="relative">
-                  <span className="absolute -left-[2.6rem] top-0 flex h-12 w-12 items-center justify-center rounded-2xl bg-[var(--brand)] text-white shadow-md shadow-[var(--brand)]/25">
-                    <Icon className="h-5 w-5" />
+                  <span className="absolute -left-[4.75rem] top-0 flex h-14 w-14 items-center justify-center rounded-2xl bg-[var(--brand)] text-white shadow-md shadow-[var(--brand)]/25">
+                    <Icon className="h-6 w-6" />
                   </span>
                   <h3 className="font-heading text-xl text-foreground">
                     {title}

@@ -56,11 +56,11 @@ export function ContactHero() {
         <div className="relative lg:col-span-5">
           <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-[var(--brand)]/20">
             <Image
-              src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=1100&fit=crop"
-              alt="Handmade crochet craft"
+              src="/customorder.png"
+              alt="Handmade crochet custom order selection"
               fill
               sizes="(min-width: 1024px) 40vw, 100vw"
-              className="object-cover"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
               priority
             />
           </div>

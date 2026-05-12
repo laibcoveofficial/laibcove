@@ -32,11 +32,11 @@ export function AboutHandmadeMatters() {
           <div className="lg:col-span-6">
             <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-[var(--brand)]/10">
               <Image
-                src="https://images.unsplash.com/photo-1605635543678-1cb6b29b40ec?w=900&h=1100&fit=crop"
-                alt="Slow handmade crochet"
+                src="/gajry5.jpeg"
+                alt="Slow handmade crochet craftsmanship"
                 fill
                 sizes="(min-width: 1024px) 45vw, 100vw"
-                className="object-cover"
+                className="object-cover transition-transform duration-500 group-hover:scale-110"
               />
             </div>
           </div>

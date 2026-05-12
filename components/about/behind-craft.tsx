@@ -2,31 +2,31 @@ import Image from "next/image";
 
 const moments = [
   {
-    src: "https://images.unsplash.com/photo-1605635543678-1cb6b29b40ec?w=900&h=900&fit=crop",
+    src: "/babyitems.jpg",
     label: "The Craft",
     caption: "Hours of looping, one stitch at a time.",
     span: "lg:col-span-5 lg:row-span-2 aspect-[4/5]",
   },
   {
-    src: "https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=600&fit=crop",
+    src: "/ourstory2.png",
     label: "The Workspace",
     caption: "Sun, plants, yarn — our small studio in Karachi.",
     span: "lg:col-span-7 aspect-[3/2]",
   },
   {
-    src: "https://images.unsplash.com/photo-1620207418302-439b387441b0?w=900&h=600&fit=crop",
+    src: "/custom-flatlay.png",
     label: "The Materials",
     caption: "Soft cotton, ethically sourced wool, premium acrylic.",
     span: "lg:col-span-3 aspect-square",
   },
   {
-    src: "https://images.unsplash.com/photo-1591561954557-26941169b49e?w=900&h=600&fit=crop",
+    src: "/gajry6.jpeg",
     label: "The Yarn",
     caption: "Hundreds of colors, organized and waiting.",
     span: "lg:col-span-4 aspect-square",
   },
   {
-    src: "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=900&h=600&fit=crop",
+    src: "/customorder.png",
     label: "The Finishing",
     caption: "Hand-tied ribbon and a card before it ships.",
     span: "lg:col-span-5 aspect-[5/4]",

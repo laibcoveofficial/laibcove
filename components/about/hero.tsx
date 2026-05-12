@@ -58,30 +58,30 @@ export function AboutHero() {
           <div className="relative grid grid-cols-12 gap-3 sm:gap-4">
             <div className="col-span-7 row-span-2 aspect-[3/4] overflow-hidden rounded-3xl shadow-xl shadow-[var(--brand)]/15">
               <Image
-                src="https://images.unsplash.com/photo-1604719312566-8912e9227c6a?w=900&h=1200&fit=crop"
+                src="/ourstory2.png"
                 alt="Founder crocheting"
                 width={900}
                 height={1200}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                 priority
               />
             </div>
             <div className="col-span-5 aspect-square overflow-hidden rounded-3xl shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1620207418302-439b387441b0?w=600&h=600&fit=crop"
+                src="/gajry6.jpeg"
                 alt="Crochet workspace"
                 width={600}
                 height={600}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
             </div>
             <div className="col-span-5 aspect-square overflow-hidden rounded-3xl shadow-lg">
               <Image
-                src="https://images.unsplash.com/photo-1605635543678-1cb6b29b40ec?w=600&h=600&fit=crop"
+                src="/bag.webp"
                 alt="Yarn collection"
                 width={600}
                 height={600}
-                className="h-full w-full object-cover"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
             </div>
           </div>
