@@ -2,9 +2,9 @@
 
 import { usePathname } from "next/navigation";
 
-const WHATSAPP_NUMBER = "923025787425"; // +92 302 5787425 — wa.me format
+const WHATSAPP_NUMBER = "923120394078"; // +92 302 5787425 — wa.me format
 const DEFAULT_MESSAGE =
-  "Hi Laibcove! I'd love to learn more about your handmade crochet pieces.";
+  "Hi Laibcove! I'd like to know more about your handmade crochet pieces.";
 
 const WhatsAppIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg viewBox="0 0 24 24" fill="currentColor" {...props}>

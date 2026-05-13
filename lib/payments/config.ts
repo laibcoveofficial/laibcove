@@ -14,17 +14,17 @@ export function getPaymentAccounts(): PaymentAccount[] {
   return [
     {
       method: "jazzcash",
-      label: "JazzCash",
-      accountNumber: process.env.JAZZCASH_ACCOUNT_NUMBER || "",
-      accountTitle: process.env.JAZZCASH_ACCOUNT_NAME || "Laibcove",
+      label: "Jazzcash",
+      accountNumber: process.env.JAZZCASH_ACCOUNT_NUMBER || "0302-5787425",
+      accountTitle: process.env.JAZZCASH_ACCOUNT_NAME || "Laiba Sohail",
       instructions:
         "Open the JazzCash app → Send Money → enter the number above → send the order total. Then paste your transaction ID below.",
     },
     {
       method: "easypaisa",
-      label: "EasyPaisa",
-      accountNumber: process.env.EASYPAISA_ACCOUNT_NUMBER || "",
-      accountTitle: process.env.EASYPAISA_ACCOUNT_NAME || "Laibcove",
+      label: "Easypaisa",
+      accountNumber: process.env.EASYPAISA_ACCOUNT_NUMBER || "0302-5787425",
+      accountTitle: process.env.EASYPAISA_ACCOUNT_NAME || "Laiba Sohail",
       instructions:
         "Open the EasyPaisa app → Send Money → enter the number above → send the order total. Then paste your transaction ID below.",
     },

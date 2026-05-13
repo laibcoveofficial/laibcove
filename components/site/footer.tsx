@@ -108,12 +108,12 @@ export function Footer() {
               <li className="flex items-start gap-2.5">
                 <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[var(--brand)]" />
                 <a
-                  href="https://wa.me/923025787425"
+                  href="https://wa.me/923120394078"
                   target="_blank"
                   rel="noreferrer"
                   className="hover:text-[var(--brand)]"
                 >
-                  0302-5787425
+                  0312-0394078
                 </a>
               </li>
             </ul>

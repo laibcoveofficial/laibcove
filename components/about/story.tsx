@@ -3,11 +3,6 @@ import { Heart, Sprout, Lightbulb, Sparkles } from "lucide-react";
 
 const chapters = [
   {
-    icon: Sprout,
-    title: "It started in childhood",
-    desc: "Tucked beside a grandmother who could turn a ball of yarn into magic, our founder learned that patience and small loops could create something beautiful.",
-  },
-  {
     icon: Heart,
     title: "A quiet love for handmade",
     desc: "What began as a hobby grew into a deep love for slow, intentional craft — a counterpoint to a world rushing past.",
