@@ -11,6 +11,7 @@ import {
   Grid,
   LogOut,
   X,
+  FileText,
 } from "lucide-react";
 import { useAdminUI } from "@/lib/admin/ui-context";
 
@@ -20,6 +21,7 @@ const links = [
   { label: "Leads", href: "/admin/leads", icon: Users },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Grid },
+  { label: "Blog", href: "/admin/blog", icon: FileText },
 ];
 
 export function Sidebar() {
