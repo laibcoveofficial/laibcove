@@ -31,7 +31,7 @@ const features = [
   {
     icon: ShieldCheck,
     title: "Secure Payments",
-    desc: "Encrypted checkout with all major cards, Apple Pay, and Google Pay.",
+    desc: "Encrypted checkout with easypaisa and jazzcash.",
   },
   {
     icon: Leaf,

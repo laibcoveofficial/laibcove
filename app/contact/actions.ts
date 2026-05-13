@@ -61,7 +61,7 @@ export async function submitCustomOrder(
       return {
         status: "error",
         message:
-          "Sorry — we couldn't save your request. Please try again or email us directly at laibcove@gmail.com.",
+          "Sorry — we couldn't save your request. Please try again or email us directly at laibcoveofficial@gmail.com.",
       };
     }
   } catch (err) {
@@ -69,7 +69,7 @@ export async function submitCustomOrder(
     return {
       status: "error",
       message:
-        "Sorry — something went wrong on our end. Please try again or email us at laibcove@gmail.com.",
+        "Sorry — something went wrong on our end. Please try again or email us at laibcoveofficial@gmail.com.",
     };
   }
 

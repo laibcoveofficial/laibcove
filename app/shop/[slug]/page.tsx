@@ -240,7 +240,7 @@ export default async function ProductDetailPage({
 
               <p className="mt-6 text-xs text-muted-foreground">
                 Free delivery on orders over PKR 5,000. Each piece is made with
-                love — turnaround is typically 2–4 weeks once your payment is
+                love — turnaround is typically 7–10 working days once your payment is
                 confirmed.
               </p>
             </div>

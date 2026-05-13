@@ -89,7 +89,7 @@ export function Hero() {
             variants={itemVariants}
             className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg"
           >
-            Discover beautifully handcrafted crochet bags, gajre, and home
+            Discover beautifully handcrafted crochet bags, gajray, and home
             decor — made from premium yarn with attention to every single
             stitch.
           </motion.p>
@@ -124,7 +124,7 @@ export function Hero() {
               >
                 <Image
                   src="/gajry1.PNG"
-                  alt="Handmade Gajre"
+                  alt="Handmade Gajray"
                   width={800}
                   height={1000}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -137,8 +137,8 @@ export function Hero() {
                 className="group relative aspect-square overflow-hidden rounded-3xl shadow-lg"
               >
                 <Image
-                  src="/flower-keychains.PNG"
-                  alt="Crochet Flower Keychains"
+                  src="/baby.jpeg"
+                  alt="Baby Items"
                   width={600}
                   height={600}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -166,8 +166,8 @@ export function Hero() {
                 className="group relative aspect-[4/5] overflow-hidden rounded-3xl shadow-xl shadow-[var(--brand)]/15"
               >
                 <Image
-                  src="/flowers.PNG"
-                  alt="Handmade Crochet Flowers"
+                  src="/bag.jpeg"
+                  alt="Handmade Crochet Bags"
                   width={800}
                   height={1000}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"

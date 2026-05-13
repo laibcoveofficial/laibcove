@@ -194,7 +194,7 @@ export function ContactForm() {
                   id="location"
                   name="location"
                   type="text"
-                  placeholder="Karachi, Pakistan"
+                  placeholder="Wah Cantt, Pakistan"
                   className={fieldClass}
                 />
               </div>

@@ -495,7 +495,7 @@ function ShippingStep({
               value={shipping.city}
               onChange={set("city")}
               className={inputClass(errors.city)}
-              placeholder="Karachi"
+              placeholder="Wah Cantt"
             />
           }
         />
@@ -523,7 +523,7 @@ function ShippingStep({
               value={shipping.order_notes}
               onChange={set("order_notes")}
               className={inputClass()}
-              placeholder="Gift wrap, delivery instructions, color preference, etc."
+              placeholder="Delivery instructions, color preference, etc."
             />
           }
         />

@@ -77,7 +77,7 @@ export function AboutHero() {
             </div>
             <div className="col-span-5 aspect-square overflow-hidden rounded-3xl shadow-lg">
               <Image
-                src="/bag.webp"
+                src="/bag.jpeg"
                 alt="Yarn collection"
                 width={600}
                 height={600}

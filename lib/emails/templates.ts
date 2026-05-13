@@ -141,7 +141,7 @@ export function customerConfirmationEmail(lead: LeadInput): {
 
     <p style="margin:0 0 16px;font-size:15px;line-height:1.6;color:${FG};">
       In the meantime, feel free to send any extra references or inspiration
-      to <a href="mailto:laibcove@gmail.com" style="color:${BRAND};">laibcove@gmail.com</a>
+      to <a href="mailto:laibcoveofficial@gmail.com" style="color:${BRAND};">laibcoveofficial@gmail.com</a>
       or message us on WhatsApp.
     </p>
 

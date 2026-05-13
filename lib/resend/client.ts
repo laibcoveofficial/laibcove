@@ -16,4 +16,4 @@ export function getResend(): Resend {
 export const EMAIL_FROM =
   process.env.EMAIL_FROM || "Laibcove <onboarding@resend.dev>";
 export const ADMIN_NOTIFY_EMAIL =
-  process.env.ADMIN_NOTIFY_EMAIL || "laibcove@gmail.com";
+  process.env.ADMIN_NOTIFY_EMAIL || "laibcoveofficial@gmail.com";

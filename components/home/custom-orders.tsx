@@ -10,8 +10,8 @@ const features = [
   },
   {
     icon: Sparkles,
-    title: "Custom Gajre & Bouquets",
-    desc: "Personalized crochet gajre or forever bouquets for your special events.",
+    title: "Custom Gajray & Bouquets",
+    desc: "Personalized crochet gajray or forever bouquets for your special events.",
   },
   {
     icon: Tag,

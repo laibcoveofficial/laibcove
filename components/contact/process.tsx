@@ -25,7 +25,7 @@ const steps = [
   {
     icon: Scissors,
     title: "Handcrafting Begins",
-    desc: "Every stitch is made by hand in our studio — typically 2–4 weeks.",
+    desc: "Every stitch is made by hand in our studio — typically 7–10 working days.",
   },
   {
     icon: PackageCheck,

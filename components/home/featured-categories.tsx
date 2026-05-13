@@ -5,14 +5,15 @@ import { getSupabase } from "@/lib/supabase/server";
 import type { Category } from "@/lib/supabase/types";
 
 const FALLBACK_IMAGES: Record<string, string> = {
-  bags: "/bag.webp",
+  bags: "/bag.jpeg",
+  gajray: "/gajry1.PNG",
   gajre: "/gajry1.PNG",
   flowers: "/flowers.PNG",
   bouquets: "/bouqeet1.jpeg",
-  "mobile-covers": "/mobilecover.jfif",
+  "mobile-covers": "/mc.jpg",
   "flowers-pot": "/flowerpot.jpeg",
-  baby: "/babyitems.jpg",
-  keychains: "/flower-keychains.PNG",
+  baby: "/baby.jpeg",
+  keychains: "/keychain.jpeg",
 };
 
 async function loadCategories() {

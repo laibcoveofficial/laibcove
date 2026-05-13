@@ -34,8 +34,8 @@ const channels = [
   {
     Icon: Mail,
     label: "Email",
-    value: "laibcove@gmail.com",
-    href: "mailto:laibcove@gmail.com",
+    value: "laibcoveofficial@gmail.com",
+    href: "mailto:laibcoveofficial@gmail.com",
     note: "Best for detailed briefs & images",
   },
   {
@@ -97,7 +97,7 @@ export function ContactInfo() {
                 <div>
                   <p className="font-semibold">Studio Location</p>
                   <p className="text-muted-foreground">
-                    Karachi, Pakistan · Shipping worldwide
+                    Wah Cantt, Pakistan · Shipping worldwide
                   </p>
                 </div>
               </div>
@@ -149,10 +149,10 @@ export function ContactInfo() {
                 <p className="mt-1 text-sm text-muted-foreground">
                   Drop us an email at{" "}
                   <Link
-                    href="mailto:wholesale@laibcove.com"
+                    href="mailto:laibcoveofficial@gmail.com"
                     className="font-medium text-[var(--brand)] hover:underline"
                   >
-                    wholesale@laibcove.com
+                    laibcoveofficial@gmail.com
                   </Link>{" "}
                   with quantity, deadline, and any reference images.
                 </p>

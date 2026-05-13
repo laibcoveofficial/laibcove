@@ -192,7 +192,7 @@ export default async function SuccessPage({
             <InfoCard
               icon={Package}
               title="What happens next?"
-              body="Once we verify your payment, we'll start crafting and ship your piece within 2–4 weeks."
+              body="Once we verify your payment, we'll start crafting and ship your piece within 7–10 working days."
             />
           </div>
 

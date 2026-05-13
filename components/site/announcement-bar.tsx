@@ -28,7 +28,7 @@ export function AnnouncementBar() {
         </div>
         <span className="inline-flex items-center gap-2 md:hidden">
           <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
-          Free shipping on orders over $50
+          Free shipping on orders over PKR 5,000
         </span>
       </div>
     </motion.div>

@@ -12,7 +12,7 @@ import { ContactFAQ } from "@/components/contact/faq";
 export const metadata: Metadata = {
   title: "Contact Us — Laibcove Custom Crochet Requests",
   description:
-    "Tell us your dream crochet design. Custom bags, gajre, bouquets, and decor — handmade just for you. Pricing in PKR.",
+    "Tell us your dream crochet design. Custom bags, gajray, bouquets, and decor — handmade just for you. Pricing in PKR.",
 };
 
 export default function ContactPage() {

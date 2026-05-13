@@ -87,7 +87,7 @@ export function Footer() {
               />
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted-foreground">
-              Handmade crochet creations — bags, gajre, decor, and bouquets —
+              Handmade crochet creations — bags, gajray, decor, and bouquets —
               stitched slowly and shipped worldwide from our small studio.
             </p>
 
@@ -99,10 +99,10 @@ export function Footer() {
               <li className="flex items-start gap-2.5">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[var(--brand)]" />
                 <a
-                  href="mailto:laibcove@gmail.com"
+                  href="mailto:laibcoveofficial@gmail.com"
                   className="hover:text-[var(--brand)]"
                 >
-                  laibcove@gmail.com
+                  laibcoveofficial@gmail.com
                 </a>
               </li>
               <li className="flex items-start gap-2.5">
@@ -205,7 +205,22 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col items-center justify-between gap-6 border-t border-border pt-8 sm:flex-row">
+        <div className="mt-14 flex flex-col items-center justify-between gap-8 border-t border-border pt-8 sm:flex-row">
+          <div className="flex flex-col items-center gap-4 sm:items-start">
+            <h4 className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground">
+              What we accept
+            </h4>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-1.5 shadow-sm">
+                <div className="h-2 w-2 rounded-full bg-[#1AB351]" />
+                <span className="text-xs font-bold text-foreground">EasyPaisa</span>
+              </div>
+              <div className="flex items-center gap-2 rounded-lg border border-border bg-white px-3 py-1.5 shadow-sm">
+                <div className="h-2 w-2 rounded-full bg-[#ED1C24]" />
+                <span className="text-xs font-bold text-foreground">JazzCash</span>
+              </div>
+            </div>
+          </div>
           <p className="text-xs text-muted-foreground">
             © {new Date().getFullYear()} Laibcove. All rights reserved. Made with
             love &amp; yarn.

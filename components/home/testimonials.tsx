@@ -25,10 +25,10 @@ const testimonials = [
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
     rating: 5,
     quote:
-      "I commissioned a custom gajre for my daughter's wedding and it was the highlight. You can feel the care that goes into every order.",
+      "I commissioned a custom gajray for my daughter's wedding and it was the highlight. You can feel the care that goes into every order.",
     productImage:
       "https://images.unsplash.com/photo-1535268647677-300dbf3d78d1?w=300&h=300&fit=crop",
-    productName: "Custom Gajre",
+    productName: "Custom Gajray",
   },
   {
     name: "Shahez",

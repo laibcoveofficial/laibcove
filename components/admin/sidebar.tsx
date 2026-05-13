@@ -8,6 +8,7 @@ import {
   Users,
   Package,
   ShoppingBag,
+  Grid,
   LogOut,
   X,
 } from "lucide-react";
@@ -18,6 +19,7 @@ const links = [
   { label: "Orders", href: "/admin/orders", icon: ShoppingBag },
   { label: "Leads", href: "/admin/leads", icon: Users },
   { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Categories", href: "/admin/categories", icon: Grid },
 ];
 
 export function Sidebar() {

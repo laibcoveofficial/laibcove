@@ -2,7 +2,7 @@ import Image from "next/image";
 
 const moments = [
   {
-    src: "/babyitems.jpg",
+    src: "/baby.jpeg",
     label: "The Craft",
     caption: "Hours of looping, one stitch at a time.",
     span: "lg:col-span-5 lg:row-span-2 aspect-[4/5]",
@@ -10,7 +10,7 @@ const moments = [
   {
     src: "/ourstory2.png",
     label: "The Workspace",
-    caption: "Sun, plants, yarn — our small studio in Karachi.",
+    caption: "Sun, plants, yarn — our small studio in Wah Cantt.",
     span: "lg:col-span-7 aspect-[3/2]",
   },
   {

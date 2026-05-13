@@ -30,10 +30,10 @@ const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const posts = [
   { image: "/gajry2.PNG", likes: "2.1k" },
-  { image: "/babyitems.jpg", likes: "1.4k" },
+  { image: "/baby.jpeg", likes: "1.4k" },
   { image: "/flowerpot.jpeg", likes: "983" },
-  { image: "/mobilecover.jfif", likes: "1.7k" },
-  { image: "/bag.webp", likes: "722" },
+  { image: "/mc.jpg", likes: "1.7k" },
+  { image: "/bag.jpeg", likes: "722" },
   { image: "/gajry3.jpeg", likes: "2.4k" },
 ];
 
@@ -41,8 +41,19 @@ import { MotionSection } from "@/components/ui/motion-section";
 
 export function InstagramGallery() {
   return (
-    <section className="bg-background py-20 sm:py-24">
-      <MotionSection className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <section className="relative overflow-hidden py-20 sm:py-24">
+      {/* Background Image */}
+      <div className="absolute inset-0 z-0">
+        <Image
+          src="/back.jpg"
+          alt=""
+          fill
+          className="object-cover opacity-10"
+          priority
+        />
+        <div className="absolute inset-0 bg-background/80" />
+      </div>
+      <MotionSection className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl text-center">
           <span className="text-xs font-semibold uppercase tracking-[0.18em] text-[var(--brand)]">
             <span className="inline-flex items-center gap-2">

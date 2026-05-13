@@ -22,7 +22,7 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Laibcove — Handmade Crochet Creations",
   description:
-    "Beautifully handcrafted crochet bags, gajre, bouquets, and accessories — made with premium yarn and love.",
+    "Beautifully handcrafted crochet bags, gajray, bouquets, and accessories — made with premium yarn and love.",
   icons: {
     icon: "/favicon.png",
   },

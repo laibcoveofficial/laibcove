@@ -59,7 +59,7 @@ export function VideoSection() {
               </>
             ) : (
               <iframe
-                src="https://www.youtube.com/embed/kgqj_CsAVks?autoplay=1"
+                src="https://www.youtube.com/embed/3tat80KEwak?autoplay=1"
                 title="Behind the scenes — crochet craftsmanship"
                 className="h-full w-full"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

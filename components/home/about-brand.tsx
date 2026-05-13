@@ -47,7 +47,7 @@ export function AboutBrand() {
           <p className="mt-5 text-base leading-relaxed text-muted-foreground">
             At Laibcove, every stitch tells a story. What started as a quiet
             evening hobby grew into a small studio crafting heirloom-quality
-            crochet pieces — bags, gajre, decor, and gifts that bring warmth
+            crochet pieces — bags, gajray, decor, and gifts that bring warmth
             and beauty into your everyday.
           </p>
           <p className="mt-4 text-base leading-relaxed text-muted-foreground">
