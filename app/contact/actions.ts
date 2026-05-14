@@ -1,7 +1,7 @@
 "use server";
 
 import { getSupabase } from "@/lib/supabase/server";
-import { getResend, EMAIL_FROM, ADMIN_NOTIFY_EMAIL } from "@/lib/resend/client";
+import { getResend, EMAIL_FROM, CLIENT_REPLY_TO, ADMIN_NOTIFY_EMAIL } from "@/lib/resend/client";
 import {
   adminNotificationEmail,
   customerConfirmationEmail,
@@ -81,6 +81,7 @@ export async function submitCustomOrder(
     const customerMail = customerConfirmationEmail(lead);
 
     await Promise.allSettled([
+      // Admin notification — reply-to goes to the lead's email
       resend.emails.send({
         from: EMAIL_FROM,
         to: ADMIN_NOTIFY_EMAIL,
@@ -88,9 +89,11 @@ export async function submitCustomOrder(
         subject: adminMail.subject,
         html: adminMail.html,
       }),
+      // Customer confirmation — reply-to goes to laibcove@gmail.com
       resend.emails.send({
         from: EMAIL_FROM,
         to: lead.email,
+        replyTo: CLIENT_REPLY_TO,
         subject: customerMail.subject,
         html: customerMail.html,
       }),
