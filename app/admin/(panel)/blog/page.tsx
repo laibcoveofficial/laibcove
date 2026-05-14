@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Plus, FileText, Calendar, Eye, EyeOff, Clock } from "lucide-react";
+import { getSession } from "@/lib/auth/session";
 import { getSupabase } from "@/lib/supabase/server";
 import { lazyPublishScheduledPosts } from "./actions";
 import { Topbar } from "@/components/admin/topbar";
@@ -39,6 +40,8 @@ export default async function AdminBlogPage({
   // Run lazy scheduler on every admin view too
   await lazyPublishScheduledPosts();
 
+  const session = await getSession();
+
   const sp = await searchParams;
   const savedMsg =
     sp.saved === "created"
@@ -57,7 +60,7 @@ export default async function AdminBlogPage({
 
   return (
     <>
-      <Topbar title="Blog" />
+      <Topbar email={session?.email || ""} title="Blog" />
       <main className="flex-1 overflow-y-auto px-4 py-8 sm:px-6 lg:px-8">
         {savedMsg && (
           <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-3 text-sm font-medium text-emerald-800">

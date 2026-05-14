@@ -207,12 +207,24 @@ export function CheckoutForm({
       setSubmitError("Please choose a payment method.");
       return;
     }
+    if (!paymentReference.trim()) {
+      setErrors((prev) => ({
+        ...prev,
+        payment_reference: "Please enter the Transaction ID after sending your payment.",
+      }));
+      return;
+    }
+    setErrors((prev) => {
+      const next = { ...prev };
+      delete next.payment_reference;
+      return next;
+    });
     setSubmitError(null);
     startSubmit(async () => {
       const result = await placeOrder({
         ...shipping,
         payment_method: paymentMethod,
-        payment_reference: paymentReference.trim() || undefined,
+        payment_reference: paymentReference.trim(),
         coupon_code: appliedCoupon?.code,
         items: items.map((i) => ({
           productId: i.productId,
@@ -293,6 +305,14 @@ export function CheckoutForm({
               setPaymentMethod={setPaymentMethod}
               paymentReference={paymentReference}
               setPaymentReference={setPaymentReference}
+              paymentReferenceError={errors.payment_reference}
+              onClearPaymentReferenceError={() =>
+                setErrors((prev) => {
+                  const next = { ...prev };
+                  delete next.payment_reference;
+                  return next;
+                })
+              }
               total={computed.total}
               submitError={submitError}
               submitting={submitting}
@@ -559,6 +579,8 @@ function PaymentStep({
   setPaymentMethod,
   paymentReference,
   setPaymentReference,
+  paymentReferenceError,
+  onClearPaymentReferenceError,
   total,
   submitError,
   submitting,
@@ -571,6 +593,8 @@ function PaymentStep({
   setPaymentMethod: (m: PaymentMethod) => void;
   paymentReference: string;
   setPaymentReference: (s: string) => void;
+  paymentReferenceError?: string;
+  onClearPaymentReferenceError: () => void;
   total: number;
   submitError: string | null;
   submitting: boolean;
@@ -679,14 +703,21 @@ function PaymentStep({
         <div className="mt-6">
           <Field
             label="JazzCash / EasyPaisa Transaction ID"
-            hint="Optional — paste the TID after sending payment so we can match it instantly."
+            required
+            hint="Paste the TID after sending payment so we can match your order instantly."
+            error={paymentReferenceError}
             input={
               <input
                 type="text"
                 value={paymentReference}
-                onChange={(e) => setPaymentReference(e.target.value)}
+                onChange={(e) => {
+                  setPaymentReference(e.target.value);
+                  if (e.target.value.trim()) {
+                    onClearPaymentReferenceError();
+                  }
+                }}
                 placeholder="e.g. T2025051012345"
-                className={inputClass()}
+                className={inputClass(paymentReferenceError)}
                 disabled={!paymentMethod}
               />
             }

@@ -15,7 +15,7 @@ export type CheckoutInput = {
   postal_code?: string;
   order_notes?: string;
   payment_method: "jazzcash" | "easypaisa";
-  payment_reference?: string;
+  payment_reference: string;
   coupon_code?: string;
   items: Array<{ productId: string; quantity: number }>;
 };
@@ -72,7 +72,9 @@ export function validateCheckout(raw: unknown): {
   }
 
   const payment_reference = sanitize(String(r.payment_reference ?? ""));
-  if (payment_reference && payment_reference.length > 100) {
+  if (!payment_reference) {
+    errors.payment_reference = "Transaction ID is required.";
+  } else if (payment_reference.length > 100) {
     errors.payment_reference = "Transaction ID is too long.";
   }
 
@@ -114,7 +116,7 @@ export function validateCheckout(raw: unknown): {
       postal_code: postal_code || undefined,
       order_notes: order_notes || undefined,
       payment_method: payment_method as "jazzcash" | "easypaisa",
-      payment_reference: payment_reference || undefined,
+      payment_reference,
       coupon_code: coupon_code || undefined,
       items,
     },
