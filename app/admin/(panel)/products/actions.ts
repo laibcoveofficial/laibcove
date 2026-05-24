@@ -8,7 +8,12 @@ import {
   uploadProductImage,
   deleteProductImage,
 } from "@/lib/supabase/storage";
-import { slugify, type Product } from "@/lib/supabase/types";
+import {
+  slugify,
+  type Product,
+  type ProductVariant,
+  type PriceTier,
+} from "@/lib/supabase/types";
 
 const MAX_IMAGES = 8;
 const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5 MB
@@ -66,6 +71,113 @@ async function handleImageUploads(formData: FormData): Promise<string[]> {
   return urls;
 }
 
+// Parse the quantity-tier pricing rows. Returns null if the admin left every
+// row blank (so we store null in DB and the product uses its regular price).
+function readPriceTiers(formData: FormData): {
+  tiers: PriceTier[] | null;
+  error: string | null;
+} {
+  const count = Math.max(0, Math.floor(num(formData.get("tierCount")) ?? 0));
+  if (count === 0) return { tiers: null, error: null };
+
+  const out: PriceTier[] = [];
+  for (let i = 0; i < count; i++) {
+    const minQty = num(formData.get(`tierMinQty_${i}`));
+    const price = num(formData.get(`tierPrice_${i}`));
+    // Skip fully-blank rows
+    if (minQty === null && price === null) continue;
+    if (minQty === null || price === null) {
+      return { tiers: null, error: "Every quantity tier needs both a minimum qty and a price." };
+    }
+    if (minQty < 2 || !Number.isFinite(minQty)) {
+      return { tiers: null, error: "Tier minimum quantity must be 2 or more." };
+    }
+    if (price < 0 || !Number.isFinite(price)) {
+      return { tiers: null, error: "Tier price must be 0 or more." };
+    }
+    out.push({ min_qty: Math.floor(minQty), price_pkr: price });
+  }
+  if (out.length === 0) return { tiers: null, error: null };
+
+  out.sort((a, b) => a.min_qty - b.min_qty);
+  const seen = new Set<number>();
+  for (const t of out) {
+    if (seen.has(t.min_qty)) {
+      return { tiers: null, error: "Each tier needs a unique minimum quantity." };
+    }
+    seen.add(t.min_qty);
+  }
+  return { tiers: out, error: null };
+}
+
+// Parse the colour variation rows. Uploads any new variant images. Returns
+// the variants array (or null when admin defined no variants) plus the list
+// of uploaded urls so they can be cleaned up on a later failure.
+async function readVariants(formData: FormData): Promise<{
+  variants: ProductVariant[] | null;
+  uploadedUrls: string[];
+  error: string | null;
+}> {
+  const count = Math.max(0, Math.floor(num(formData.get("variantCount")) ?? 0));
+  if (count === 0) return { variants: null, uploadedUrls: [], error: null };
+
+  const variants: ProductVariant[] = [];
+  const uploadedUrls: string[] = [];
+  const names = new Set<string>();
+
+  for (let i = 0; i < count; i++) {
+    const name = text(formData.get(`variantName_${i}`));
+    if (!name) {
+      return { variants: null, uploadedUrls, error: "Each color variation needs a name." };
+    }
+    if (name.length > 60) {
+      return { variants: null, uploadedUrls, error: "Color names must be 60 chars or fewer." };
+    }
+    const key = name.toLowerCase();
+    if (names.has(key)) {
+      return { variants: null, uploadedUrls, error: `Duplicate color name: ${name}` };
+    }
+    names.add(key);
+
+    const colorHexRaw = text(formData.get(`variantColorHex_${i}`));
+    const color_hex = /^#[0-9a-fA-F]{6}$/.test(colorHexRaw) ? colorHexRaw : null;
+
+    const stockRaw = formData.get(`variantStock_${i}`);
+    const stock = num(stockRaw);
+    if (stock !== null && (stock < 0 || !Number.isFinite(stock))) {
+      return { variants: null, uploadedUrls, error: `Stock for "${name}" must be 0 or more.` };
+    }
+
+    let image_url: string | null = null;
+    const fileEntry = formData.get(`variantImage_${i}`);
+    const file = fileEntry instanceof File && fileEntry.size > 0 ? fileEntry : null;
+    if (file) {
+      if (file.size > MAX_IMAGE_BYTES) {
+        return {
+          variants: null,
+          uploadedUrls,
+          error: `Image for "${name}" is larger than ${MAX_IMAGE_BYTES / 1024 / 1024} MB.`,
+        };
+      }
+      const url = await uploadProductImage(file);
+      uploadedUrls.push(url);
+      image_url = url;
+    } else {
+      const existing = text(formData.get(`variantExistingImage_${i}`));
+      image_url = existing || null;
+    }
+
+    variants.push({
+      name,
+      color_hex,
+      image_url,
+      stock: stock === null ? null : Math.floor(stock),
+    });
+  }
+
+  return { variants, uploadedUrls, error: null };
+}
+
 function readFormFields(formData: FormData) {
   const name = text(formData.get("name"));
   const slug = text(formData.get("slug")) || slugify(name);
@@ -114,11 +226,25 @@ export async function createProduct(
   const err = validate(fields);
   if (err) return { status: "error", message: err };
 
+  const { tiers, error: tiersErr } = readPriceTiers(formData);
+  if (tiersErr) return { status: "error", message: tiersErr };
+
   let uploadedUrls: string[] = [];
   try {
     uploadedUrls = await handleImageUploads(formData);
   } catch (e) {
     return { status: "error", message: (e as Error).message };
+  }
+
+  const variantResult = await readVariants(formData);
+  if (variantResult.error) {
+    // Roll back variant + gallery uploads on validation failure.
+    await Promise.allSettled(
+      [...uploadedUrls, ...variantResult.uploadedUrls].map((u) =>
+        deleteProductImage(u),
+      ),
+    );
+    return { status: "error", message: variantResult.error };
   }
 
   const supabase = getSupabase();
@@ -139,13 +265,18 @@ export async function createProduct(
       video_url: fields.videoUrl,
       stock: fields.stock,
       status: fields.status,
+      variants: variantResult.variants,
+      price_tiers: tiers,
     })
     .select("id")
     .single();
 
   if (error) {
-    // Best-effort cleanup of uploaded files if DB insert failed.
-    await Promise.allSettled(uploadedUrls.map((u) => deleteProductImage(u)));
+    await Promise.allSettled(
+      [...uploadedUrls, ...variantResult.uploadedUrls].map((u) =>
+        deleteProductImage(u),
+      ),
+    );
     return { status: "error", message: error.message };
   }
 
@@ -169,6 +300,9 @@ export async function updateProduct(
   const err = validate(fields);
   if (err) return { status: "error", message: err };
 
+  const { tiers, error: tiersErr } = readPriceTiers(formData);
+  if (tiersErr) return { status: "error", message: tiersErr };
+
   // Existing image URLs the admin chose to keep (sent as multiple inputs)
   const keptImages = formData.getAll("existingImages")
     .map((v) => (typeof v === "string" ? v : ""))
@@ -183,18 +317,44 @@ export async function updateProduct(
   }
   const finalImages = [...keptImages, ...newUrls];
 
+  const variantResult = await readVariants(formData);
+  if (variantResult.error) {
+    await Promise.allSettled(
+      [...newUrls, ...variantResult.uploadedUrls].map((u) =>
+        deleteProductImage(u),
+      ),
+    );
+    return { status: "error", message: variantResult.error };
+  }
+
   const supabase = getSupabase();
 
   // Find any previously-saved images that the admin removed so we can purge them.
   const { data: prev } = await supabase
     .from("products")
-    .select("images")
+    .select("images, variants")
     .eq("id", id)
     .maybeSingle();
   const previousImages: string[] = Array.isArray(prev?.images)
     ? (prev?.images as string[])
     : [];
   const removed = previousImages.filter((u) => !keptImages.includes(u));
+
+  // Variant images the admin replaced or dropped — clean them up after the
+  // update succeeds. Compare the previous variants' image URLs against the
+  // ones still referenced in the new variants list.
+  const previousVariants = (Array.isArray(prev?.variants)
+    ? (prev?.variants as ProductVariant[])
+    : []
+  );
+  const stillUsedImageUrls = new Set<string>(
+    (variantResult.variants ?? [])
+      .map((v) => v.image_url)
+      .filter((u): u is string => !!u),
+  );
+  const orphanedVariantImages = previousVariants
+    .map((v) => v.image_url)
+    .filter((u): u is string => !!u && !stillUsedImageUrls.has(u));
 
   const { error } = await supabase
     .from("products")
@@ -213,17 +373,27 @@ export async function updateProduct(
       video_url: fields.videoUrl,
       stock: fields.stock,
       status: fields.status,
+      variants: variantResult.variants,
+      price_tiers: tiers,
     })
     .eq("id", id);
 
   if (error) {
     // Roll back uploads on failure.
-    await Promise.allSettled(newUrls.map((u) => deleteProductImage(u)));
+    await Promise.allSettled(
+      [...newUrls, ...variantResult.uploadedUrls].map((u) =>
+        deleteProductImage(u),
+      ),
+    );
     return { status: "error", message: error.message };
   }
 
   // Purge images that were removed from the gallery (best-effort).
   await Promise.allSettled(removed.map((u) => deleteProductImage(u)));
+  // Purge orphaned variant images.
+  await Promise.allSettled(
+    orphanedVariantImages.map((u) => deleteProductImage(u)),
+  );
 
   revalidateProductPaths(id);
   redirect(

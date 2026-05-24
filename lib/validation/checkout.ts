@@ -17,7 +17,7 @@ export type CheckoutInput = {
   payment_method: "jazzcash" | "easypaisa";
   payment_reference: string;
   coupon_code?: string;
-  items: Array<{ productId: string; quantity: number }>;
+  items: Array<{ productId: string; quantity: number; variantName?: string }>;
 };
 
 export type CheckoutErrors = Partial<
@@ -97,7 +97,17 @@ export function validateCheckout(raw: unknown): {
         errors.items_invalid = "Cart contains invalid items.";
         break;
       }
-      items.push({ productId, quantity });
+      const variantNameRaw =
+        typeof o.variantName === "string" ? sanitize(o.variantName) : "";
+      if (variantNameRaw.length > 80) {
+        errors.items_invalid = "Cart contains invalid items.";
+        break;
+      }
+      items.push(
+        variantNameRaw
+          ? { productId, quantity, variantName: variantNameRaw }
+          : { productId, quantity },
+      );
     }
   }
 

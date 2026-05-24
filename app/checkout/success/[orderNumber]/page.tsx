@@ -141,6 +141,11 @@ export default async function SuccessPage({
                     <p className="line-clamp-2 text-sm font-semibold text-foreground">
                       {it.product_name}
                     </p>
+                    {it.variant_name ? (
+                      <p className="text-xs text-muted-foreground">
+                        Color: <span className="font-medium text-foreground/80">{it.variant_name}</span>
+                      </p>
+                    ) : null}
                     <p className="text-xs text-muted-foreground">
                       Qty {it.quantity} × {formatPKR(it.unit_price_pkr)}
                     </p>

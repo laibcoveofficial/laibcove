@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Sparkles, Star } from "lucide-react";
 import { AnnouncementBar } from "@/components/site/announcement-bar";
 import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
-import { AddToCartButton } from "@/components/cart/add-to-cart-button";
 import { getSupabase } from "@/lib/supabase/server";
-import { formatPKR, type Product } from "@/lib/supabase/types";
-import { ProductImageGallery } from "@/components/shop/product-image-gallery";
+import { type Product } from "@/lib/supabase/types";
+import { ProductPurchasePanel } from "@/components/shop/product-purchase-panel";
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -106,11 +104,6 @@ export default async function ProductDetailPage({
   const product = await loadProduct(slug);
   if (!product) notFound();
 
-  const onSale =
-    product.compare_at_price_pkr &&
-    product.compare_at_price_pkr > product.price_pkr;
-  const soldOut = product.status === "sold_out" || product.stock <= 0;
-
   return (
     <>
       <AnnouncementBar />
@@ -136,115 +129,13 @@ export default async function ProductDetailPage({
             <span className="text-foreground/80">{product.name}</span>
           </nav>
 
-          <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
-            <div className="space-y-3">
-              <div className="relative">
-                <ProductImageGallery 
-                  images={product.images || []} 
-                  name={product.name} 
-                />
-                
-                <div className="absolute left-4 top-4 flex flex-col gap-1.5 z-10 pointer-events-none">
-                  {product.is_new_arrival ? (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-[var(--brand)] px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
-                      <Sparkles className="h-3 w-3" />
-                      New
-                    </span>
-                  ) : null}
-                  {product.is_best_seller ? (
-                    <span className="rounded-full bg-amber-400 px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-white">
-                      Best Seller
-                    </span>
-                  ) : null}
-                </div>
-              </div>
+          <ProductPurchasePanel product={product} />
 
-              {product.video_url ? (
-                <div className="pt-2">
-                  <VideoEmbed url={product.video_url} />
-                </div>
-              ) : null}
+          {product.video_url ? (
+            <div className="mt-10 max-w-3xl">
+              <VideoEmbed url={product.video_url} />
             </div>
-
-            <div className="lg:sticky lg:top-24 lg:self-start">
-              <div className="flex flex-wrap items-center gap-2 text-xs">
-                {product.category_slug ? (
-                  <span className="rounded-full bg-[var(--brand-soft)] px-3 py-1 font-semibold uppercase tracking-wider text-[var(--brand)]">
-                    {product.category_slug}
-                  </span>
-                ) : null}
-                {soldOut ? (
-                  <span className="rounded-full bg-gray-100 px-3 py-1 font-semibold uppercase tracking-wider text-gray-700">
-                    Sold Out
-                  </span>
-                ) : null}
-              </div>
-
-              <h1 className="font-heading mt-4 text-3xl text-foreground sm:text-4xl lg:text-5xl">
-                {product.name}
-              </h1>
-
-              <div className="mt-5 flex items-baseline gap-3">
-                <span className="font-heading text-3xl text-foreground">
-                  {formatPKR(product.price_pkr)}
-                </span>
-                {onSale ? (
-                  <span className="text-lg text-muted-foreground line-through">
-                    {formatPKR(product.compare_at_price_pkr)}
-                  </span>
-                ) : null}
-                {onSale ? (
-                  <span className="rounded-full bg-red-50 px-2.5 py-0.5 text-xs font-semibold text-red-700">
-                    Sale
-                  </span>
-                ) : null}
-              </div>
-
-              <div className="mt-6 flex items-center gap-1 text-[var(--brand)]">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} className="h-4 w-4 fill-current" strokeWidth={0} />
-                ))}
-                <span className="ml-1 text-sm text-muted-foreground">
-                  Handmade with love
-                </span>
-              </div>
-
-              {product.description ? (
-                <div className="mt-7 whitespace-pre-wrap text-base leading-relaxed text-foreground/85">
-                  {product.description}
-                </div>
-              ) : null}
-
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                {soldOut ? (
-                  <Link
-                    href={`/contact?product=${encodeURIComponent(product.name)}`}
-                    className="group inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[var(--brand)] px-7 py-3.5 text-sm font-semibold text-white shadow-lg shadow-[var(--brand)]/25 transition-all hover:-translate-y-0.5"
-                  >
-                    Request Similar
-                  </Link>
-                ) : (
-                  <AddToCartButton
-                    product={product}
-                    label="Add to Cart"
-                    className="flex-1"
-                  />
-                )}
-                <Link
-                  href="/shop"
-                  className="inline-flex items-center justify-center gap-2 rounded-full border border-foreground/20 bg-white px-7 py-3.5 text-sm font-semibold text-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)]"
-                >
-                  Keep Browsing
-                </Link>
-              </div>
-
-              <p className="mt-6 text-xs text-muted-foreground">
-                Free delivery on orders over PKR 5,000. Each piece is made with
-                love — turnaround is typically 7–10 working days once your payment is
-                confirmed.
-              </p>
-            </div>
-          </div>
+          ) : null}
         </div>
       </main>
       <Footer />

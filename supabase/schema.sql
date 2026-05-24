@@ -158,7 +158,12 @@ create table if not exists public.products (
   -- Inventory / state
   stock  int not null default 0,
   status text not null default 'available'
-    check (status in ('available', 'sold_out', 'archived'))
+    check (status in ('available', 'sold_out', 'archived')),
+
+  -- Color variations: nullable jsonb array of { name, color_hex, image_url, stock }
+  variants    jsonb,
+  -- Quantity-tier pricing: nullable jsonb array of { min_qty, price_pkr } sorted by min_qty asc
+  price_tiers jsonb
 );
 
 create index if not exists products_category_idx     on public.products (category_slug);
@@ -335,7 +340,10 @@ create table if not exists public.order_items (
 
   unit_price_pkr numeric(12,2) not null,
   quantity       int not null check (quantity > 0),
-  line_total_pkr numeric(12,2) not null
+  line_total_pkr numeric(12,2) not null,
+
+  -- Selected color variation (snapshot — may be null if product had no variants)
+  variant_name text
 );
 
 create index if not exists order_items_order_idx   on public.order_items (order_id);

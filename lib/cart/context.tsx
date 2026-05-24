@@ -9,7 +9,8 @@ import {
   useRef,
   useState,
 } from "react";
-import type { CartItem, CartTotals } from "./types";
+import { type CartItem, type CartTotals, buildLineKey } from "./types";
+import { unitPriceForQuantity } from "@/lib/supabase/types";
 import {
   DEFAULT_DELIVERY_PKR,
   DEFAULT_FREE_DELIVERY_THRESHOLD_PKR,
@@ -17,15 +18,17 @@ import {
 
 const STORAGE_KEY = "laibcove_cart_v1";
 
+type AddItemInput = Omit<CartItem, "quantity" | "unitPrice" | "lineKey">;
+
 type CartContextValue = {
   items: CartItem[];
   hydrated: boolean;
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
-  addItem: (item: Omit<CartItem, "quantity">, quantity?: number) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (item: AddItemInput, quantity?: number) => void;
+  removeItem: (lineKey: string) => void;
+  updateQuantity: (lineKey: string, quantity: number) => void;
   clear: () => void;
   totals: CartTotals;
 };
@@ -39,16 +42,41 @@ function loadFromStorage(): CartItem[] {
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (x): x is CartItem =>
-        x &&
-        typeof x === "object" &&
-        typeof x.productId === "string" &&
-        typeof x.name === "string" &&
-        typeof x.unitPrice === "number" &&
-        typeof x.quantity === "number" &&
-        x.quantity > 0,
-    );
+    return parsed
+      .filter(
+        (x): x is Partial<CartItem> =>
+          x &&
+          typeof x === "object" &&
+          typeof (x as { productId?: unknown }).productId === "string" &&
+          typeof (x as { name?: unknown }).name === "string" &&
+          typeof (x as { unitPrice?: unknown }).unitPrice === "number" &&
+          typeof (x as { quantity?: unknown }).quantity === "number" &&
+          (x as { quantity: number }).quantity > 0,
+      )
+      .map((x): CartItem => {
+        const productId = x.productId as string;
+        const variantName =
+          typeof x.variantName === "string" && x.variantName ? x.variantName : null;
+        const basePrice =
+          typeof x.basePrice === "number" ? x.basePrice : (x.unitPrice as number);
+        return {
+          lineKey:
+            typeof x.lineKey === "string"
+              ? x.lineKey
+              : buildLineKey(productId, variantName),
+          productId,
+          slug: (x.slug as string | null) ?? null,
+          name: x.name as string,
+          image: (x.image as string | null) ?? null,
+          unitPrice: x.unitPrice as number,
+          quantity: x.quantity as number,
+          maxStock: typeof x.maxStock === "number" ? x.maxStock : 0,
+          basePrice,
+          priceTiers: Array.isArray(x.priceTiers) ? x.priceTiers : null,
+          variantName,
+          variantImage: (x.variantImage as string | null) ?? null,
+        };
+      });
   } catch {
     return [];
   }
@@ -76,19 +104,23 @@ function calcDeliveryClient(subtotal: number): number {
   return flat;
 }
 
+// Recompute the effective unit price for a line given its new quantity.
+function withQuantity(item: CartItem, quantity: number): CartItem {
+  const unitPrice = unitPriceForQuantity(item.basePrice, item.priceTiers, quantity);
+  return { ...item, quantity, unitPrice };
+}
+
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const firstHydrate = useRef(true);
 
-  // Hydrate from localStorage once on mount
   useEffect(() => {
     setItems(loadFromStorage());
     setHydrated(true);
   }, []);
 
-  // Persist on change (skip the very first effect run since we're loading)
   useEffect(() => {
     if (!hydrated) return;
     if (firstHydrate.current) {
@@ -98,7 +130,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     saveToStorage(items);
   }, [items, hydrated]);
 
-  // Sync across tabs
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
       if (e.key !== STORAGE_KEY) return;
@@ -111,49 +142,48 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
 
-  const addItem = useCallback(
-    (item: Omit<CartItem, "quantity">, quantity = 1) => {
-      setItems((prev) => {
-        const existing = prev.find((p) => p.productId === item.productId);
-        const max = item.maxStock > 0 ? item.maxStock : Infinity;
-        if (existing) {
-          const nextQty = Math.min(existing.quantity + quantity, max, 99);
-          return prev.map((p) =>
-            p.productId === item.productId
-              ? { ...p, quantity: nextQty, maxStock: item.maxStock }
-              : p,
-          );
-        }
-        const startQty = Math.min(Math.max(quantity, 1), max, 99);
-        return [...prev, { ...item, quantity: startQty }];
-      });
-      setIsOpen(true);
-    },
-    [],
-  );
+  const addItem = useCallback((input: AddItemInput, quantity = 1) => {
+    setItems((prev) => {
+      const lineKey = buildLineKey(input.productId, input.variantName);
+      const existing = prev.find((p) => p.lineKey === lineKey);
+      const max = input.maxStock > 0 ? input.maxStock : Infinity;
 
-  const removeItem = useCallback((productId: string) => {
-    setItems((prev) => prev.filter((p) => p.productId !== productId));
-  }, []);
-
-  const updateQuantity = useCallback(
-    (productId: string, quantity: number) => {
-      setItems((prev) => {
-        const next = Math.max(0, Math.min(99, Math.floor(quantity)));
-        if (next <= 0) return prev.filter((p) => p.productId !== productId);
+      if (existing) {
+        const nextQty = Math.min(existing.quantity + quantity, max, 99);
         return prev.map((p) =>
-          p.productId === productId
-            ? {
-                ...p,
-                quantity:
-                  p.maxStock > 0 ? Math.min(next, p.maxStock) : next,
-              }
+          p.lineKey === lineKey
+            ? withQuantity({ ...p, maxStock: input.maxStock }, nextQty)
             : p,
         );
+      }
+
+      const startQty = Math.min(Math.max(quantity, 1), max, 99);
+      const seed: CartItem = {
+        ...input,
+        lineKey,
+        quantity: startQty,
+        unitPrice: input.basePrice,
+      };
+      return [...prev, withQuantity(seed, startQty)];
+    });
+    setIsOpen(true);
+  }, []);
+
+  const removeItem = useCallback((lineKey: string) => {
+    setItems((prev) => prev.filter((p) => p.lineKey !== lineKey));
+  }, []);
+
+  const updateQuantity = useCallback((lineKey: string, quantity: number) => {
+    setItems((prev) => {
+      const next = Math.max(0, Math.min(99, Math.floor(quantity)));
+      if (next <= 0) return prev.filter((p) => p.lineKey !== lineKey);
+      return prev.map((p) => {
+        if (p.lineKey !== lineKey) return p;
+        const capped = p.maxStock > 0 ? Math.min(next, p.maxStock) : next;
+        return withQuantity(p, capped);
       });
-    },
-    [],
-  );
+    });
+  }, []);
 
   const clear = useCallback(() => setItems([]), []);
 
@@ -164,7 +194,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     );
     const itemCount = items.reduce((sum, i) => sum + i.quantity, 0);
     const delivery = calcDeliveryClient(subtotal);
-    const discount = 0; // applied at checkout once coupon is validated
+    const discount = 0;
     return {
       itemCount,
       subtotal,

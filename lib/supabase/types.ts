@@ -60,6 +60,18 @@ export type Category = {
 // =========================================================================
 // PRODUCTS
 // =========================================================================
+export type ProductVariant = {
+  name: string;
+  color_hex: string | null;
+  image_url: string | null;
+  stock: number | null;
+};
+
+export type PriceTier = {
+  min_qty: number;
+  price_pkr: number;
+};
+
 export type Product = {
   id: string;
   created_at: string;
@@ -83,7 +95,65 @@ export type Product = {
 
   stock: number;
   status: "available" | "sold_out" | "archived";
+
+  variants: ProductVariant[] | null;
+  price_tiers: PriceTier[] | null;
 };
+
+// Pick the unit price for a given ordered quantity. Tiers are matched by the
+// largest min_qty <= qty. If no tier applies, basePrice (products.price_pkr)
+// wins. Tiers are assumed already sorted ascending; we sort defensively anyway.
+export function unitPriceForQuantity(
+  basePrice: number,
+  tiers: PriceTier[] | null | undefined,
+  qty: number,
+): number {
+  if (!tiers || tiers.length === 0 || qty < 1) return basePrice;
+  const sorted = [...tiers].sort((a, b) => a.min_qty - b.min_qty);
+  let price = basePrice;
+  for (const t of sorted) {
+    if (qty >= t.min_qty) price = t.price_pkr;
+  }
+  return price;
+}
+
+// Resolve stock for the chosen variant. If the variant pins its own stock,
+// that wins. Otherwise we treat the variant as unlimited rather than falling
+// back to `products.stock` — when an admin adds colour options they typically
+// don't bother filling the product-level stock counter, and the existing form
+// default of 0 would otherwise make the product look sold out.
+export function variantStock(
+  productStock: number,
+  variant: ProductVariant | null | undefined,
+): number {
+  if (!variant) return productStock;
+  if (variant.stock === null || variant.stock === undefined) {
+    return Number.MAX_SAFE_INTEGER;
+  }
+  return variant.stock;
+}
+
+// True when the product card/detail should display the "Sold Out" badge.
+// Status is the source of truth; stock only gates availability for products
+// WITHOUT variants (those rely on the product-level stock counter).
+export function isProductSoldOut(
+  product: Pick<Product, "status" | "stock" | "variants">,
+): boolean {
+  if (product.status === "sold_out") return true;
+  const variants = Array.isArray(product.variants) ? product.variants : null;
+  if (variants && variants.length > 0) {
+    // With variants, availability is decided at variant level. If every
+    // variant explicitly says 0 stock, the whole product is sold out.
+    const explicit = variants
+      .map((v) => v.stock)
+      .filter((s): s is number => typeof s === "number");
+    if (explicit.length === variants.length && explicit.every((s) => s <= 0)) {
+      return true;
+    }
+    return false;
+  }
+  return product.stock <= 0;
+}
 
 export const PRODUCT_STATUSES: Product["status"][] = [
   "available",
@@ -239,6 +309,7 @@ export type OrderItem = {
   unit_price_pkr: number;
   quantity: number;
   line_total_pkr: number;
+  variant_name: string | null;
 };
 
 export type Payment = {

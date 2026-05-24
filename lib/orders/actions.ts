@@ -9,7 +9,12 @@ import { validateCoupon } from "@/lib/coupons/validate";
 import {
   sendOrderReceivedEmails,
 } from "@/lib/emails/order-mailer";
-import type { Product } from "@/lib/supabase/types";
+import {
+  unitPriceForQuantity,
+  variantStock,
+  type Product,
+  type ProductVariant,
+} from "@/lib/supabase/types";
 
 export type PlaceOrderResult =
   | { ok: true; orderNumber: string; total: number }
@@ -46,7 +51,7 @@ export async function placeOrder(
   const { data: productsData, error: productsErr } = await supabase
     .from("products")
     .select(
-      "id, name, slug, price_pkr, images, stock, status, is_published",
+      "id, name, slug, price_pkr, images, stock, status, is_published, variants, price_tiers",
     )
     .in("id", productIds);
 
@@ -64,10 +69,24 @@ export async function placeOrder(
     | "stock"
     | "status"
     | "is_published"
+    | "variants"
+    | "price_tiers"
   >[];
   const byId = new Map(products.map((p) => [p.id, p]));
 
-  // Reject if any item is missing, unpublished, or sold out
+  // Resolve which variant (if any) was selected for each line item, and compute
+  // the tier-based unit price. Reject if missing/unpublished/oversold/invalid variant.
+  type ResolvedItem = {
+    productId: string;
+    productName: string;
+    productSlug: string | null;
+    productImage: string | null;
+    quantity: number;
+    unitPrice: number;
+    variant: ProductVariant | null;
+  };
+  const resolved: ResolvedItem[] = [];
+
   for (const item of data.items) {
     const p = byId.get(item.productId);
     if (!p || !p.is_published) {
@@ -76,25 +95,68 @@ export async function placeOrder(
         error: `One of your items is no longer available. Please remove it and try again.`,
       };
     }
-    if (p.status === "sold_out" || p.stock <= 0) {
+    if (p.status === "sold_out") {
       return {
         ok: false,
         error: `"${p.name}" is sold out. Please remove it from your cart.`,
       };
     }
-    if (item.quantity > p.stock) {
+
+    let variant: ProductVariant | null = null;
+    const hasVariants = Array.isArray(p.variants) && p.variants.length > 0;
+    if (hasVariants) {
+      if (!item.variantName) {
+        return {
+          ok: false,
+          error: `Please choose a colour for "${p.name}".`,
+        };
+      }
+      variant =
+        (p.variants ?? []).find((v) => v.name === item.variantName) ?? null;
+      if (!variant) {
+        return {
+          ok: false,
+          error: `Selected colour for "${p.name}" is no longer available.`,
+        };
+      }
+    }
+
+    const stockAvail = variantStock(p.stock, variant);
+    if (stockAvail <= 0) {
       return {
         ok: false,
-        error: `Only ${p.stock} of "${p.name}" available. Please reduce the quantity.`,
+        error: `"${p.name}"${variant ? ` (${variant.name})` : ""} is sold out.`,
       };
     }
+    if (item.quantity > stockAvail) {
+      return {
+        ok: false,
+        error: `Only ${stockAvail} of "${p.name}"${variant ? ` (${variant.name})` : ""} available.`,
+      };
+    }
+
+    const unitPrice = unitPriceForQuantity(
+      Number(p.price_pkr),
+      p.price_tiers,
+      item.quantity,
+    );
+
+    resolved.push({
+      productId: p.id,
+      productName: p.name,
+      productSlug: p.slug,
+      productImage: variant?.image_url ?? p.images?.[0] ?? null,
+      quantity: item.quantity,
+      unitPrice,
+      variant,
+    });
   }
 
   // Server-authoritative totals
-  const subtotal = data.items.reduce((sum, item) => {
-    const p = byId.get(item.productId)!;
-    return sum + Number(p.price_pkr) * item.quantity;
-  }, 0);
+  const subtotal = resolved.reduce(
+    (sum, r) => sum + r.unitPrice * r.quantity,
+    0,
+  );
 
   let discount = 0;
   let couponCode: string | null = null;
@@ -212,20 +274,17 @@ export async function placeOrder(
   }
 
   // Insert items
-  const itemRows = data.items.map((item) => {
-    const p = byId.get(item.productId)!;
-    const unitPrice = Number(p.price_pkr);
-    return {
-      order_id: orderId!,
-      product_id: p.id,
-      product_name: p.name,
-      product_slug: p.slug,
-      product_image: p.images?.[0] ?? null,
-      unit_price_pkr: unitPrice,
-      quantity: item.quantity,
-      line_total_pkr: unitPrice * item.quantity,
-    };
-  });
+  const itemRows = resolved.map((r) => ({
+    order_id: orderId!,
+    product_id: r.productId,
+    product_name: r.productName,
+    product_slug: r.productSlug,
+    product_image: r.productImage,
+    unit_price_pkr: r.unitPrice,
+    quantity: r.quantity,
+    line_total_pkr: r.unitPrice * r.quantity,
+    variant_name: r.variant?.name ?? null,
+  }));
   const { error: itemsErr } = await supabase
     .from("order_items")
     .insert(itemRows);
@@ -271,16 +330,14 @@ export async function placeOrder(
       city: data.city,
       paymentMethod: data.payment_method,
       paymentReference: data.payment_reference ?? null,
-      items: data.items.map((it) => {
-        const p = byId.get(it.productId)!;
-        return {
-          name: p.name,
-          quantity: it.quantity,
-          unitPrice: Number(p.price_pkr),
-          lineTotal: Number(p.price_pkr) * it.quantity,
-          image: p.images?.[0] ?? null,
-        };
-      }),
+      items: resolved.map((r) => ({
+        name: r.productName,
+        quantity: r.quantity,
+        unitPrice: r.unitPrice,
+        lineTotal: r.unitPrice * r.quantity,
+        image: r.productImage,
+        variantName: r.variant?.name ?? null,
+      })),
       subtotal,
       delivery,
       discount,

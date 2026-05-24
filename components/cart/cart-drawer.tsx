@@ -121,7 +121,7 @@ export function CartDrawer() {
             <ul className="space-y-3">
               {items.map((item) => (
                 <li
-                  key={item.productId}
+                  key={item.lineKey}
                   className="flex gap-3 rounded-2xl border border-border bg-background p-3"
                 >
                   <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-[var(--surface-soft)]">
@@ -148,6 +148,11 @@ export function CartDrawer() {
                     >
                       {item.name}
                     </Link>
+                    {item.variantName ? (
+                      <span className="mt-0.5 text-[11px] text-muted-foreground">
+                        Color: <span className="font-medium text-foreground/80">{item.variantName}</span>
+                      </span>
+                    ) : null}
                     <span className="mt-1 text-sm text-foreground/85">
                       {formatPKR(item.unitPrice)}
                     </span>
@@ -157,7 +162,7 @@ export function CartDrawer() {
                           type="button"
                           aria-label="Decrease quantity"
                           onClick={() =>
-                            updateQuantity(item.productId, item.quantity - 1)
+                            updateQuantity(item.lineKey, item.quantity - 1)
                           }
                           className="inline-flex h-7 w-7 items-center justify-center rounded-l-full text-foreground/70 transition-colors hover:bg-[var(--surface-soft)]"
                         >
@@ -174,7 +179,7 @@ export function CartDrawer() {
                             item.quantity >= item.maxStock
                           }
                           onClick={() =>
-                            updateQuantity(item.productId, item.quantity + 1)
+                            updateQuantity(item.lineKey, item.quantity + 1)
                           }
                           className="inline-flex h-7 w-7 items-center justify-center rounded-r-full text-foreground/70 transition-colors hover:bg-[var(--surface-soft)] disabled:cursor-not-allowed disabled:opacity-40"
                         >
@@ -184,7 +189,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         aria-label={`Remove ${item.name}`}
-                        onClick={() => removeItem(item.productId)}
+                        onClick={() => removeItem(item.lineKey)}
                         className="inline-flex h-7 w-7 items-center justify-center rounded-full text-foreground/40 transition-colors hover:bg-red-50 hover:text-red-600"
                       >
                         <Trash2 className="h-3.5 w-3.5" />

@@ -39,7 +39,7 @@ export function OrderSummary({
       <ul className="mt-5 space-y-3 divide-y divide-border">
         {items.map((item, i) => (
           <li
-            key={item.productId}
+            key={item.lineKey}
             className={`flex gap-3 ${i === 0 ? "" : "pt-3"}`}
           >
             <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-[var(--surface-soft)]">
@@ -65,6 +65,11 @@ export function OrderSummary({
               <span className="line-clamp-2 text-sm font-medium text-foreground">
                 {item.name}
               </span>
+              {item.variantName ? (
+                <span className="text-[11px] text-muted-foreground">
+                  Color: {item.variantName}
+                </span>
+              ) : null}
               <span className="text-xs text-muted-foreground">
                 {formatPKR(item.unitPrice)} each
               </span>

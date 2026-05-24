@@ -3,37 +3,71 @@
 import { useState } from "react";
 import { Check, ShoppingBag } from "lucide-react";
 import { useCart } from "@/lib/cart/context";
-import type { Product } from "@/lib/supabase/types";
+import type { Product, ProductVariant } from "@/lib/supabase/types";
+import { isProductSoldOut, variantStock } from "@/lib/supabase/types";
 
 type Variant = "primary" | "secondary";
 
 export function AddToCartButton({
   product,
   quantity = 1,
+  selectedVariant,
   variant = "primary",
   className = "",
   label,
+  disabled,
 }: {
-  product: Pick<Product, "id" | "name" | "slug" | "price_pkr" | "images" | "stock" | "status">;
+  product: Pick<
+    Product,
+    | "id"
+    | "name"
+    | "slug"
+    | "price_pkr"
+    | "images"
+    | "stock"
+    | "status"
+    | "variants"
+    | "price_tiers"
+  >;
   quantity?: number;
+  selectedVariant?: ProductVariant | null;
   variant?: Variant;
   className?: string;
   label?: string;
+  disabled?: boolean;
 }) {
   const { addItem, hydrated } = useCart();
   const [justAdded, setJustAdded] = useState(false);
 
-  const soldOut = product.status === "sold_out" || product.stock <= 0;
+  const hasVariants = Array.isArray(product.variants) && product.variants.length > 0;
+  const effectiveStock = variantStock(product.stock, selectedVariant);
+  // Without variants the product is sold out when its stock counter hits 0.
+  // With variants the selected variant's stock is what matters — but if no
+  // variant is picked yet we fall back to whole-product availability.
+  const soldOut = hasVariants
+    ? selectedVariant
+      ? effectiveStock <= 0 || product.status === "sold_out"
+      : isProductSoldOut(product)
+    : isProductSoldOut(product);
+
+  const needsVariantPick = hasVariants && !selectedVariant;
 
   const onClick = () => {
+    if (needsVariantPick) return;
+    const basePrice = Number(product.price_pkr);
+    const image =
+      selectedVariant?.image_url ?? product.images?.[0] ?? null;
     addItem(
       {
         productId: product.id,
         slug: product.slug,
         name: product.name,
-        image: product.images?.[0] ?? null,
-        unitPrice: Number(product.price_pkr),
-        maxStock: product.stock,
+        image,
+        basePrice,
+        priceTiers: product.price_tiers ?? null,
+        maxStock: effectiveStock,
+        variantName: selectedVariant?.name ?? null,
+        variantImage: selectedVariant?.image_url ?? null,
       },
       quantity,
     );
@@ -51,7 +85,7 @@ export function AddToCartButton({
   return (
     <button
       type="button"
-      disabled={!hydrated || soldOut}
+      disabled={!hydrated || soldOut || disabled || needsVariantPick}
       onClick={onClick}
       aria-live="polite"
       className={`${base} ${tone} ${className}`}
@@ -64,7 +98,11 @@ export function AddToCartButton({
       ) : (
         <>
           <ShoppingBag className="h-4 w-4" />
-          {soldOut ? "Sold Out" : (label ?? "Add to Cart")}
+          {soldOut
+            ? "Sold Out"
+            : needsVariantPick
+              ? "Select a color"
+              : (label ?? "Add to Cart")}
         </>
       )}
     </button>

@@ -50,6 +50,7 @@ export type OrderEmailItem = {
   unitPrice: number;
   lineTotal: number;
   image: string | null;
+  variantName?: string | null;
 };
 
 export type OrderEmailContext = {
@@ -83,6 +84,11 @@ function itemsTable(items: OrderEmailItem[]): string {
           }
           <div>
             <div style="font-size:14px;font-weight:600;color:${FG};">${escape(it.name)}</div>
+            ${
+              it.variantName
+                ? `<div style="font-size:12px;color:${MUTED};margin-top:2px;">Color: ${escape(it.variantName)}</div>`
+                : ""
+            }
             <div style="font-size:12px;color:${MUTED};margin-top:2px;">Qty ${it.quantity} × ${formatPKR(it.unitPrice)}</div>
           </div>
         </div>

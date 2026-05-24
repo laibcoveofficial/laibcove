@@ -229,6 +229,7 @@ export function CheckoutForm({
         items: items.map((i) => ({
           productId: i.productId,
           quantity: i.quantity,
+          variantName: i.variantName ?? undefined,
         })),
       });
       if (!result.ok) {

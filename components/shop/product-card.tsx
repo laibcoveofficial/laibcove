@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, ImageOff, Sparkles } from "lucide-react";
-import { formatPKR, type Product } from "@/lib/supabase/types";
+import { formatPKR, isProductSoldOut, type Product } from "@/lib/supabase/types";
 import { QuickAddButton } from "@/components/shop/quick-add-button";
 
 export function ShopProductCard({ product }: { product: Product }) {
@@ -10,7 +10,8 @@ export function ShopProductCard({ product }: { product: Product }) {
   const onSale =
     product.compare_at_price_pkr &&
     product.compare_at_price_pkr > product.price_pkr;
-  const soldOut = product.status === "sold_out" || product.stock <= 0;
+  const soldOut = isProductSoldOut(product);
+  const variants = Array.isArray(product.variants) ? product.variants : [];
 
   return (
     <Link
@@ -95,6 +96,23 @@ export function ShopProductCard({ product }: { product: Product }) {
             </span>
           ) : null}
         </div>
+        {variants.length > 0 ? (
+          <div className="mt-3 flex items-center gap-1.5">
+            <ul className="flex items-center -space-x-1">
+              {variants.slice(0, 5).map((v) => (
+                <li
+                  key={v.name}
+                  title={v.name}
+                  className="h-4 w-4 rounded-full border-2 border-white shadow-sm ring-1 ring-black/10"
+                  style={{ backgroundColor: v.color_hex ?? "#cccccc" }}
+                />
+              ))}
+            </ul>
+            <span className="text-[11px] text-muted-foreground">
+              {variants.length} color{variants.length > 1 ? "s" : ""}
+            </span>
+          </div>
+        ) : null}
       </div>
     </Link>
   );

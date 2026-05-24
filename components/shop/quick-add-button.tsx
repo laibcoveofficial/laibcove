@@ -3,21 +3,33 @@
 import { useState } from "react";
 import { Check, Plus } from "lucide-react";
 import { useCart } from "@/lib/cart/context";
-import type { Product } from "@/lib/supabase/types";
+import { isProductSoldOut, type Product } from "@/lib/supabase/types";
 
 export function QuickAddButton({
   product,
 }: {
   product: Pick<
     Product,
-    "id" | "name" | "slug" | "price_pkr" | "images" | "stock" | "status"
+    | "id"
+    | "name"
+    | "slug"
+    | "price_pkr"
+    | "images"
+    | "stock"
+    | "status"
+    | "variants"
+    | "price_tiers"
   >;
 }) {
   const { addItem, hydrated } = useCart();
   const [justAdded, setJustAdded] = useState(false);
-  const soldOut = product.status === "sold_out" || product.stock <= 0;
+  const soldOut = isProductSoldOut(product);
+  // Products with colour choices can't quick-add — buyer needs to pick a colour
+  // on the detail page first.
+  const hasVariants =
+    Array.isArray(product.variants) && product.variants.length > 0;
 
-  if (soldOut) return null;
+  if (soldOut || hasVariants) return null;
 
   return (
     <button
@@ -33,8 +45,11 @@ export function QuickAddButton({
             slug: product.slug,
             name: product.name,
             image: product.images?.[0] ?? null,
-            unitPrice: Number(product.price_pkr),
+            basePrice: Number(product.price_pkr),
+            priceTiers: product.price_tiers ?? null,
             maxStock: product.stock,
+            variantName: null,
+            variantImage: null,
           },
           1,
         );
