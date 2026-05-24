@@ -9,8 +9,6 @@ const testimonials = [
   {
     name: "Ayesha Khan",
     location: "Karachi, PK",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop",
     rating: 5,
     quote:
       "Absolutely beautiful craftsmanship! The bag is even prettier in real life — every stitch perfect. I've already ordered two more as gifts.",
@@ -21,8 +19,6 @@ const testimonials = [
   {
     name: "Parveen Akhtar",
     location: "Lahore, PK",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=200&h=200&fit=crop",
     rating: 5,
     quote:
       "I commissioned a custom gajray for my daughter's wedding and it was the highlight. You can feel the care that goes into every order.",
@@ -33,8 +29,6 @@ const testimonials = [
   {
     name: "Shahez",
     location: "Islamabad, PK",
-    avatar:
-      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&h=200&fit=crop",
     rating: 5,
     quote:
       "The packaging alone made me cry happy tears. The forever bouquet looks gorgeous on my dining table. Highly recommend!",
@@ -45,8 +39,6 @@ const testimonials = [
   {
     name: "Zainab Bibi",
     location: "Rawalpindi, PK",
-    avatar:
-      "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=200&h=200&fit=crop",
     rating: 5,
     quote:
       "Best crochet items in Pakistan! The quality of yarn is amazing and the colors are so vibrant. Will definitely buy again.",
@@ -140,20 +132,9 @@ export function Testimonials() {
                 </blockquote>
 
                 <figcaption className="mt-6 flex items-center justify-between gap-3 border-t border-border pt-5">
-                  <div className="flex items-center gap-3">
-                    <div className="relative h-11 w-11 overflow-hidden rounded-full ring-2 ring-[var(--brand-soft)]">
-                      <Image
-                        src={t.avatar}
-                        alt=""
-                        fill
-                        sizes="44px"
-                        className="object-cover"
-                      />
-                    </div>
-                    <div className="text-sm">
-                      <p className="font-semibold text-foreground">{t.name}</p>
-                      <p className="text-muted-foreground">{t.location}</p>
-                    </div>
+                  <div className="text-sm">
+                    <p className="font-semibold text-foreground">{t.name}</p>
+                    <p className="text-muted-foreground">{t.location}</p>
                   </div>
                   <div className="flex items-center gap-2 rounded-xl bg-[var(--brand-soft)] py-1.5 pl-1.5 pr-3">
                     <div className="relative h-9 w-9 overflow-hidden rounded-lg">
