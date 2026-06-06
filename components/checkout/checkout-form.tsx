@@ -10,6 +10,7 @@ import {
   ShoppingBag,
   ShieldCheck,
   Tag,
+  TicketPercent,
   X,
   Check,
   CreditCard,
@@ -24,6 +25,7 @@ import {
   DEFAULT_FREE_DELIVERY_THRESHOLD_PKR,
 } from "@/lib/orders/delivery";
 import { formatPKR, type PaymentMethod } from "@/lib/supabase/types";
+import type { AvailableCoupon } from "@/lib/coupons/available";
 import { placeOrder, checkCoupon } from "@/lib/orders/actions";
 
 type AccountInfo = {
@@ -62,14 +64,21 @@ function calcDelivery(subtotal: number, flat: number, threshold: number) {
   return flat;
 }
 
+// Short label for an offer card, e.g. "10% off" or "PKR 500 off".
+function couponHeadline(c: AvailableCoupon): string {
+  return c.type === "percent" ? `${c.value}% off` : `${formatPKR(c.value)} off`;
+}
+
 export function CheckoutForm({
   paymentAccounts,
   delivery: deliveryFlat,
   freeDeliveryThreshold,
+  availableCoupons = [],
 }: {
   paymentAccounts: AccountInfo[];
   delivery?: number;
   freeDeliveryThreshold?: number;
+  availableCoupons?: AvailableCoupon[];
 }) {
   const router = useRouter();
   const { items, hydrated, totals, clear } = useCart();
@@ -88,7 +97,8 @@ export function CheckoutForm({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitting, startSubmit] = useTransition();
-  const [checkingCoupon, setCheckingCoupon] = useState(false);
+  // Which code is mid-apply (drives the per-button spinner); null when idle.
+  const [applyingCode, setApplyingCode] = useState<string | null>(null);
   const [hasCheckedEmpty, setHasCheckedEmpty] = useState(false);
 
   const flat = deliveryFlat ?? DEFAULT_DELIVERY_PKR;
@@ -179,15 +189,18 @@ export function CheckoutForm({
     if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  const onApplyCoupon = async () => {
+  // Apply any code — used by both the manual input and the one-click offer cards.
+  const applyCode = async (rawCode: string) => {
     setCouponError(null);
-    if (!couponInput.trim()) {
+    const code = rawCode.trim();
+    if (!code) {
       setCouponError("Enter a coupon code first.");
       return;
     }
-    setCheckingCoupon(true);
-    const res = await checkCoupon(couponInput.trim(), computed.subtotal);
-    setCheckingCoupon(false);
+    if (applyingCode) return; // guard against double-clicks while one is in flight
+    setApplyingCode(code.toUpperCase());
+    const res = await checkCoupon(code, computed.subtotal);
+    setApplyingCode(null);
     if (!res.ok) {
       setCouponError(res.error);
       setAppliedCoupon(null);
@@ -196,6 +209,8 @@ export function CheckoutForm({
     setAppliedCoupon({ code: res.code, discount: res.discount });
     setCouponInput("");
   };
+
+  const onApplyCoupon = () => applyCode(couponInput);
 
   const onRemoveCoupon = () => {
     setAppliedCoupon(null);
@@ -336,13 +351,11 @@ export function CheckoutForm({
           />
 
           <div className="rounded-3xl border border-border bg-background p-5">
-            <label
-              htmlFor="coupon"
-              className="flex items-center gap-2 text-sm font-semibold text-foreground"
-            >
+            <p className="flex items-center gap-2 text-sm font-semibold text-foreground">
               <Tag className="h-4 w-4 text-[var(--brand)]" />
-              Have a coupon?
-            </label>
+              {appliedCoupon ? "Coupon applied" : "Have a coupon?"}
+            </p>
+
             {appliedCoupon ? (
               <div className="mt-3 flex items-center justify-between rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm">
                 <div>
@@ -364,33 +377,102 @@ export function CheckoutForm({
               </div>
             ) : (
               <>
-                <div className="mt-3 flex gap-2">
-                  <input
-                    id="coupon"
-                    type="text"
-                    placeholder="Enter code"
-                    value={couponInput}
-                    onChange={(e) => setCouponInput(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        e.preventDefault();
-                        onApplyCoupon();
-                      }
-                    }}
-                    className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm uppercase tracking-wider outline-none placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20"
-                  />
-                  <button
-                    type="button"
-                    onClick={onApplyCoupon}
-                    disabled={checkingCoupon || !couponInput.trim()}
-                    className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-foreground/20 bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)] disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    {checkingCoupon ? (
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                    ) : null}
-                    Apply
-                  </button>
+                {/* One-click offers — apply without typing a code */}
+                {availableCoupons.length > 0 ? (
+                  <ul className="mt-3 space-y-2">
+                    {availableCoupons.map((c) => {
+                      const eligible = computed.subtotal >= c.min_order_pkr;
+                      const busy = applyingCode === c.code;
+                      return (
+                        <li
+                          key={c.code}
+                          className="flex items-center justify-between gap-3 rounded-2xl border border-dashed border-[var(--brand)]/40 bg-[var(--brand-soft)]/40 px-4 py-3"
+                        >
+                          <div className="min-w-0">
+                            <div className="flex flex-wrap items-center gap-2">
+                              <TicketPercent className="h-4 w-4 shrink-0 text-[var(--brand)]" />
+                              <span className="font-mono text-sm font-bold uppercase tracking-wider text-foreground">
+                                {c.code}
+                              </span>
+                              <span className="rounded-full bg-[var(--brand)] px-2 py-0.5 text-[11px] font-semibold text-white">
+                                {couponHeadline(c)}
+                              </span>
+                            </div>
+                            {c.description ? (
+                              <p className="mt-1 truncate text-xs text-foreground/70">
+                                {c.description}
+                              </p>
+                            ) : null}
+                            {c.min_order_pkr > 0 ? (
+                              <p
+                                className={`mt-0.5 text-xs ${
+                                  eligible
+                                    ? "text-muted-foreground"
+                                    : "text-amber-700"
+                                }`}
+                              >
+                                {eligible
+                                  ? `Min order ${formatPKR(c.min_order_pkr)}`
+                                  : `Add ${formatPKR(
+                                      c.min_order_pkr - computed.subtotal,
+                                    )} more to use`}
+                              </p>
+                            ) : null}
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => applyCode(c.code)}
+                            disabled={applyingCode !== null}
+                            className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--brand)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-all hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                          >
+                            {busy ? (
+                              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                            ) : null}
+                            Apply
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                ) : null}
+
+                {/* Manual entry — fallback for codes that aren't listed */}
+                <div className="mt-3">
+                  {availableCoupons.length > 0 ? (
+                    <p className="mb-2 text-center text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
+                      or enter a code
+                    </p>
+                  ) : null}
+                  <div className="flex gap-2">
+                    <input
+                      id="coupon"
+                      type="text"
+                      placeholder="Enter code"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          onApplyCoupon();
+                        }
+                      }}
+                      className="flex-1 rounded-full border border-border bg-background px-4 py-2.5 text-sm uppercase tracking-wider outline-none placeholder:normal-case placeholder:tracking-normal placeholder:text-muted-foreground focus:border-[var(--brand)] focus:ring-2 focus:ring-[var(--brand)]/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={onApplyCoupon}
+                      disabled={applyingCode !== null || !couponInput.trim()}
+                      className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-foreground/20 bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-[var(--brand)] hover:text-[var(--brand)] disabled:cursor-not-allowed disabled:opacity-50"
+                    >
+                      {applyingCode !== null &&
+                      applyingCode === couponInput.trim().toUpperCase() ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : null}
+                      Apply
+                    </button>
+                  </div>
                 </div>
+
                 {couponError ? (
                   <p className="mt-2 text-xs text-red-600">{couponError}</p>
                 ) : null}

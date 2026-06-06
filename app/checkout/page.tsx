@@ -4,6 +4,7 @@ import { Header } from "@/components/site/header";
 import { Footer } from "@/components/site/footer";
 import { CheckoutForm } from "@/components/checkout/checkout-form";
 import { getPaymentAccounts } from "@/lib/payments/config";
+import { listAvailableCoupons } from "@/lib/coupons/available";
 import {
   DEFAULT_DELIVERY_PKR,
   DEFAULT_FREE_DELIVERY_THRESHOLD_PKR,
@@ -17,8 +18,9 @@ export const metadata: Metadata = {
 
 export const dynamic = "force-dynamic";
 
-export default function CheckoutPage() {
+export default async function CheckoutPage() {
   const accounts = getPaymentAccounts();
+  const availableCoupons = await listAvailableCoupons();
   const delivery = Number(
     process.env.NEXT_PUBLIC_DELIVERY_PKR ?? DEFAULT_DELIVERY_PKR,
   );
@@ -42,6 +44,7 @@ export default function CheckoutPage() {
             }))}
             delivery={delivery}
             freeDeliveryThreshold={freeDeliveryThreshold}
+            availableCoupons={availableCoupons}
           />
         </div>
       </main>

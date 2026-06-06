@@ -12,6 +12,7 @@ import {
   LogOut,
   X,
   FileText,
+  TicketPercent,
 } from "lucide-react";
 import { useAdminUI } from "@/lib/admin/ui-context";
 
@@ -21,6 +22,7 @@ const links = [
   { label: "Leads", href: "/admin/leads", icon: Users },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Grid },
+  { label: "Coupons", href: "/admin/coupons", icon: TicketPercent },
   { label: "Blog", href: "/admin/blog", icon: FileText },
 ];
 
