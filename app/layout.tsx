@@ -39,28 +39,35 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${playfair.variable} ${poppins.variable} h-full antialiased`}
     >
+      <head>
+        {/*
+          Meta Pixel — emitted as a plain inline <script> (NOT next/script).
+          next/script with beforeInteractive serializes inline code into Next's
+          `self.__next_s` runtime queue, so the base code never appears as a
+          literal <script> tag. Meta's "Check for code" crawler scans the raw
+          HTML for the standard snippet and reports "no pixel" against that
+          wrapped form. A raw inline script renders the snippet verbatim, which
+          both Meta's crawler and the Pixel Helper recognize.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1294386936103474');
+fbq('track', 'PageView');`,
+          }}
+        />
+      </head>
       <body
         suppressHydrationWarning
         className="min-h-full flex flex-col bg-background text-foreground font-sans"
       >
-        <Script
-          id="meta-pixel"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              !function(f,b,e,v,n,t,s)
-              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-              n.queue=[];t=b.createElement(e);t.async=!0;
-              t.src=v;s=b.getElementsByTagName(e)[0];
-              s.parentNode.insertBefore(t,s)}(window, document,'script',
-              'https://connect.facebook.net/en_US/fbevents.js');
-              fbq('init', '1294386936103474');
-              fbq('track', 'PageView');
-            `,
-          }}
-        />
         <noscript>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
